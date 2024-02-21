@@ -1,7 +1,7 @@
 import pandas as pd
 
-df_pool = pd.read_csv("../../data/pool_heuristics.csv", index_col="token_address")
-df_transfers = pd.read_csv("../../data/transfer_heuristics.csv").drop_duplicates(subset=['token_address'])
+df_pool = pd.read_csv("./data/pool_heuristics.csv", index_col="token_address")
+df_transfers = pd.read_csv("./data/transfer_heuristics.csv").drop_duplicates(subset=['token_address'])
 df_transfers = df_transfers.set_index("token_address")
 label_list = []
 
@@ -9,7 +9,7 @@ df = pd.concat([df_transfers, df_pool], axis=1, join='inner')
 df['inactive'] = df['inactive'] * df['inactive_transfers']
 df = df.drop(['inactive_transfers'], axis=1)
 
-healthy_tokens = pd.read_csv("../../data/healthy_tokens.csv")['token_address']
+healthy_tokens = pd.read_csv("./data/healthy_tokens.csv")['token_address']
 
 for token in healthy_tokens:
     try:

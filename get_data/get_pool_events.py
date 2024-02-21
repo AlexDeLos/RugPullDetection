@@ -1,5 +1,8 @@
 import json
+import os
+import sys
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 import shared
 from Utils.eth_utils import get_logs, events_to_json
 shared.init()
@@ -34,6 +37,10 @@ def get_pool_events(event_name, hashed_event, pool_address, out_path, start_bloc
         return
 
     json_events = events_to_json(events)
+    print(f"Saving {pool_address}.json")
+    print(f"Events: {json_events}")
+    if json_events != []:
+        t = ''
     with open(f'{out_path}/{pool_address}.json', 'w+') as f:
         json.dump(json_events, f)
     f.close()

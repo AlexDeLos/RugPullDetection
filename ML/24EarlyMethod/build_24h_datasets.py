@@ -1,16 +1,20 @@
 import pandas as pd
 import json
+import os
+import sys
 
+#add path to root folder of repository
+sys.path.append(os.getcwd())
 import shared
 
 shared.init()
 from features.pool_features import get_pool_features
 from features.transfer_features import get_transfer_features, get_curve
 
-df = pd.read_csv("../Labelling/labeled_list.csv", index_col="token_address")
-pool_features = pd.read_csv("../../data/pool_heuristics.csv", index_col="token_address")
-decimals = pd.read_csv("../../data/decimals.csv", index_col="token_address")
-with open('../../data/pools_of_token.json', 'r') as f:
+df = pd.read_csv("ML/Labelling/labeled_list.csv", index_col="token_address")
+pool_features = pd.read_csv("data/pool_heuristics.csv", index_col="token_address")
+decimals = pd.read_csv("data/decimals.csv", index_col="token_address")
+with open('data/pools_of_token.json', 'r') as f:
     pool_of_token = json.loads(f.read())
 
 WETH_pools = pool_of_token[shared.WETH]

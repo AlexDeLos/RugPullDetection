@@ -80,15 +80,17 @@ def get_pools(dex, factory): #v2 or sushi
 
     hash_create = '0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9'
     if dex == 'uniswap_v2':
-        from_block = 10008355
-        to_block = shared.BLOCKSTUDY
-        number_batches = 20
+        # from_block = 10008355
+        # to_block = shared.BLOCKSTUDY
+        from_block = 10008425
+        to_block = 10194008
+        number_batches = 10
         pools = get_logs(factory, 'PairCreated', hash_create, from_block, to_block, number_batches)
     
     if dex == 'sushiswap':
-        from_block = 10822038
+        from_block = 10008355
         to_block = shared.BLOCKSTUDY
-        number_batches = 20
+        number_batches = 10
         pools = get_logs(factory, 'PairCreated', hash_create, from_block, to_block, number_batches)
 
     pool_dic = {}

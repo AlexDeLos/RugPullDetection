@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
-sys.path.append("../")
+import os
+sys.path.append(os.getcwd())
 import shared
 shared.init()
 import numpy as np
@@ -75,10 +76,10 @@ def get_dict_reserves(decimal, pool_address, weth_position):
 
     return reserves
 
-with open('../../data/pools_of_token.json', 'r') as f:
+with open('./data/pools_of_token.json', 'r') as f:
     pool_of_token = json.loads(f.read())
 
-decimals       = pd.read_csv('../../data/decimals.csv', index_col="token_address")
+decimals       = pd.read_csv('./data/decimals.csv', index_col="token_address")
 token_features = {}
 WETH_pools     = pool_of_token[shared.WETH]
 
@@ -97,5 +98,5 @@ for pool in tqdm(WETH_pools):
         pass
 
 df = pd.DataFrame(token_features).transpose()
-df.to_csv("../../data/pool_heuristics.csv", index=False)
+df.to_csv("./data/pool_heuristics.csv", index=False)
 

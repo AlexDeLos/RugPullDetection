@@ -2,6 +2,8 @@ import requests
 from web3.datastructures import AttributeDict
 from hexbytes import HexBytes
 import sys
+import time
+import ast
 sys.path.append("../")
 import shared
 shared.init()
@@ -113,18 +115,52 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
         to_block]
 
     block_list[0] -= 1
-    list_params = [[{"address": contract.address,
+    if hash_create is None:
+        list_params = [[{"address": contract.address,
                      "fromBlock": hex(block_list[i - 1] + 1),
-                     "toBlock": hex(block_list[i]),
-                     "topics": [hash_create]}] for i in range(1, number_batches + 1)]
+                     "toBlock": hex(block_list[i])
+                     }] for i in range(1, number_batches + 1)
+                     ]
+    else:
+        list_params = [[{"address": contract.address,
+                        "fromBlock": hex(block_list[i - 1] + 1),
+                        "toBlock": hex(block_list[i]),
+                        "topics": [hash_create]
+                        }] for i in range(1, number_batches + 1)
+                        ]
 
     logs = get_rpc_response("eth_getLogs", list_params)
     for j, log in enumerate(logs):
         if list(log.keys())[-1] == "result":
             for event in log['result']:
+                #NEVER IN HERE CAUSE LOGS ARE EMPTY
                 log_dict = change_log_dict(event)
                 events_clean += [clean_logs(contract, myevent, [log_dict])]
+        elif list(log.keys())[-1] == "error":
+            if log['error']['code'] == -32005:
+                #wait for 30 seconds
+                if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
+                    from_block = log['error']['message'].split('.')[1].split(' ')[-2]
+                    # drop the ' ', '[', and ',' characters
+                    from_block = from_block[1:-1].replace(',', '')
+                    from_block = ast.literal_eval(from_block)
+ 
+
+                    to_block = log['error']['message'].split('.')[1].split(' ')[-1]
+                    to_block = to_block.replace(']', '')
+
+                    to_block = ast.literal_eval(to_block)
+                    # return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
+
+                    raise Exception('query returned more than 10000 results', 'try using blocks {} and {}'.format(from_block, to_block))
+                # 
+                time.sleep(32)
+                return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
+            
+            else:
+                print(log['error'])
+                return []
         else:
             events_clean += get_logs(contract, myevent, hash_create, int(list_params[j][0]["fromBlock"], 16),
-                                     int(list_params[j][0]["toBlock"], 16), 15)
+                                     int(list_params[j][0]["toBlock"], 16), 10) #chage number_batches to 10
     return events_clean

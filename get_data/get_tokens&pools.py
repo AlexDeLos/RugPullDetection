@@ -1,8 +1,11 @@
 import pandas as pd
 import json
+import os
+import sys
 
-import shared
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from Utils.eth_utils import get_pools
+import shared
 shared.init()
 
 
@@ -42,4 +45,4 @@ def get_token_and_pools(out_path, dex='uniswap_v2'):
     print('Tokens and Pools downloaded!')
 
 
-# get_token_and_pools("../data", dex='uniswap_v2')
+get_token_and_pools("./data_new", dex='uniswap_v2')
