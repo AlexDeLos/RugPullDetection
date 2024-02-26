@@ -24,14 +24,17 @@ Uniswap, like other DEXs, has gained much attention this year because it is a no
 As mentioned in the paper, we highly recommend to have access to a full or an archive node to download all the necesary data, and add the endpoint in config.ini.
 
 1. Run the scripts in get_data in the following order:
-  1.1 get_tokens&pools.py
-  1.2 get_pool_events.py
-  1.3 get_contract_creation.py
-  1.4 get_decimals.py
-  1.5 get_source_code.py
-  1.6 get_transfers.py
-2. ML.
-3. Jupyter Notebook.
+  1.1 get_tokens_and_pools.py ->Done
+  1.2 get_pool_events.py ->Done
+  1.3 get_contract_creation.py ->Done and saved in a csv file
+  1.4 get_decimals.py ->Done
+  1.5 get_source_code.py -> DONE
+  1.6 get_transfers.py -> DONE
+3. Run the extract pool_heuristics.py to extract the features of the pools.
+4. Run the extract extract_transfer_heuristics.py to extract the features of the tokens.
+5. Run assign_labels.py to label the tokens.
+6. ML.
+7. Jupyter Notebook.
 
 
 ### Example

@@ -8,6 +8,9 @@ import numpy as np
 import json
 from tqdm import tqdm
 
+data_path = shared.DATA_PATH
+
+# data_path = './data'
 
 def get_features(reserves_dict, token_address, pool_address):
     liquidity, blocks, prices, weth = [], [], [], []
@@ -58,7 +61,7 @@ def get_features(reserves_dict, token_address, pool_address):
 
 
 def get_dict_reserves(decimal, pool_address, weth_position):
-    with open(f'/media/victor/Elements/data/pool_sync_events/{pool_address}.json') as f:
+    with open(data_path+f'/pool_sync_events/{pool_address}.json') as f:
         events = json.loads(f.read())
     f.close()
 
@@ -76,10 +79,10 @@ def get_dict_reserves(decimal, pool_address, weth_position):
 
     return reserves
 
-with open('./data/pools_of_token.json', 'r') as f:
+with open(data_path+ './pools_of_token.json', 'r') as f:
     pool_of_token = json.loads(f.read())
 
-decimals       = pd.read_csv('./data/decimals.csv', index_col="token_address")
+decimals       = pd.read_csv(data_path + '/decimals.csv', index_col="token_address")
 token_features = {}
 WETH_pools     = pool_of_token[shared.WETH]
 
@@ -98,5 +101,5 @@ for pool in tqdm(WETH_pools):
         pass
 
 df = pd.DataFrame(token_features).transpose()
-df.to_csv("./data/pool_heuristics.csv", index=False)
+df.to_csv(data_path+"/pool_heuristics.csv", index=False)
 

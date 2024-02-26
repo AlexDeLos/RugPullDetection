@@ -1,50 +1,95 @@
-#! before this can be ran you need to rin the Do_not_rug_on_me.pynb file
+
 import pandas as pd
 from get_data.get_decimals import get_decimal_token
 from get_data.get_pool_events import get_pool_events
-from Utils.abi_info import obtain_hash_event
+from get_data.get_contract_creation import get_contract_creation
+from get_data.get_source_code import get_source_code
+from get_data.get_transfers import get_transfers
+from get_data.get_tokens_pools import get_token_and_pools
 import json
+import os
 
 import shared
 shared.init()
+out_path = "./data_mine"
+
+
+# This will take a while, get comfortable <3
+print('starting')
+if not os.path.exists(out_path):
+    os.makedirs(out_path)
+get_token_and_pools(out_path, dex='uniswap_v2')
+print('created tokens and pools')
 
 #TODO create the decimals file
-# tokens = pd.read_csv("./data_mine/tokens.csv")['token_address']
-# health_tokens = pd.read_csv("./data/healthy_tokens.csv")['token_address']
-# # decimals_dict = {"token_address": [], "decimals": []}
-# decimals_dict = pd.read_csv("./data_mine/decimals.csv")
-# # for token in tokens:
-# #     decimals_dict["token_address"].append(token)
-# #     #184 tokens
-# #     decimals_dict["decimals"].append(get_decimal_token(token))
-# for token in health_tokens:
-#     decimals_dict["token_address"].append(token)
-#     #184 tokens
-#     decimals_dict["decimals"].append(get_decimal_token(token))
-# decimals = pd.DataFrame(decimals_dict)
-# decimals.to_csv("./data_mine/decimals.csv", index=False)
 
-from_block = 10008355
+
+# from_block = 10008355
+from_block = shared.BLOCKSTUDY - 7500 # approx one day
 to_block = shared.BLOCKSTUDY
 
+tokens = pd.read_csv(out_path + "/tokens.csv")['token_address']
+health_tokens = pd.read_csv(out_path + "/healthy_tokens.csv")['token_address']
+tokens = pd.concat([tokens, health_tokens], axis=0).drop_duplicates()
 
-from_block = 19101714
-to_block = 19101716
-with open('./data/pools_of_token.json', 'r') as f:
+with open(out_path + '/pools_of_token.json', 'r') as f:
     pool_dict= json.loads(f.read())
-# pool_addresses = list(pool_dict.keys())
-
-address1 = '0x97a6EdAD9a90346A5D49bb2FDC7348A71e2f5C6E'
-address2 = '0xB6909B960DbbE7392D405429eB2b3649752b4838'
-
-transefer_hash = obtain_hash_event('Transfer(address,address,uint256)')
-has_true = '0x48dab321eda2a44b37d8d9fab92ca32ca3421cd2b7265198c26083c5b26cacf2'
-
-pool_address = '0xB6909B960DbbE7392D405429eB2b3649752b4838'
-
-#! INVESTIGATE THE TOPICS, how do they work
+    
+#* Run the get_pool_events for each pool
+# If the folder does not exist, it will be created
+if not os.path.exists(out_path + '/pool_transfer_events'):
+    os.makedirs(out_path + '/pool_transfer_events')
+# if not os.path.exists(out_path + '/pool_swap_events'):
+#     os.makedirs(out_path + '/pool_swap_events')
+# if not os.path.exists(out_path + '/pool_approve_events'):
+#     os.makedirs(out_path + '/pool_approve_events')
+if not os.path.exists(out_path + '/pool_sync_events'):
+    os.makedirs(out_path + '/pool_sync_events')
 pool_dict.items()
 for key, entry in pool_dict.items():
     for pool in entry:
-        get_pool_events('Transaction', None , pool_address, './data/pool_sync_events', from_block, to_block)
-x = 0
+        # get_pool_events('Transfer', None , pool['address'], out_path + '/pool_transfer_events', from_block, to_block)
+        # get_pool_events('Swap', None , pool['address'], out_path + '/pool_swap_events', from_block, to_block)
+        # get_pool_events('Approve', None , pool['address'], out_path + '/pool_approve_events', from_block, to_block)
+        get_pool_events('Sync', None , pool['address'], out_path + '/pool_sync_events', from_block, to_block)
+print('created pool events') #REACHED
+
+#* Run get_contract_creation.py 
+
+creation_dict = {"token_address": [], "creation_block": []}
+# creation_dict = pd.read_csv(out_path + "/creation.csv")
+for token in tokens:
+    creation_dict["token_address"].append(token)
+    #184 tokens
+    creation_dict["creation_block"].append(get_contract_creation(token))
+
+print('created creation_dict')# REACHED HERE
+
+#* run get_decimals.py
+
+decimals_dict = {"token_address": [], "decimals": []}
+# decimals_dict = pd.read_csv(out_path + "/decimals.csv")
+for token in tokens:
+    decimals_dict["token_address"].append(token)
+    #184 tokens
+    decimals_dict["decimals"].append(get_decimal_token(token))
+    
+decimals = pd.DataFrame(decimals_dict)
+decimals.to_csv(out_path + "/decimals.csv", index=False)
+
+print('created decimals_dict') #REACHED HERE
+
+#* run get_source_code.py
+if not os.path.exists(out_path + "/source_code"):
+    os.makedirs(out_path + "/source_code")
+for token in tokens:
+    get_source_code(token, out_path + "/source_code")
+    
+print('created source_code')
+
+if not os.path.exists(out_path + "/transfers"):
+    os.makedirs(out_path + "/transfers")
+
+#* run get_transfers.py
+for token_address in tokens:
+    get_transfers(token_address, out_path + "/transfers", from_block, to_block)

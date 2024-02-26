@@ -82,13 +82,13 @@ def get_pools(dex, factory): #v2 or sushi
     if dex == 'uniswap_v2':
         # from_block = 10008355
         # to_block = shared.BLOCKSTUDY
-        from_block = 10008425
-        to_block = 10194008
+        from_block = shared.BLOCKSTUDY_FROM
+        to_block = shared.BLOCKSTUDY
         number_batches = 10
         pools = get_logs(factory, 'PairCreated', hash_create, from_block, to_block, number_batches)
     
     if dex == 'sushiswap':
-        from_block = 10008355
+        from_block = shared.BLOCKSTUDY_FROM
         to_block = shared.BLOCKSTUDY
         number_batches = 10
         pools = get_logs(factory, 'PairCreated', hash_create, from_block, to_block, number_batches)

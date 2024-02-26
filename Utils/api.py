@@ -3,6 +3,7 @@ from web3.datastructures import AttributeDict
 from hexbytes import HexBytes
 import sys
 import time
+import warnings
 import ast
 sys.path.append("../")
 import shared
@@ -37,8 +38,25 @@ def get_rpc_response(method, list_params=[]):
     data = [{"jsonrpc": "2.0", "method": method, "params": params, "id": 1} for params in list_params]
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, headers=headers, json=data)
-    return response.json()
+    logs = response.json()
+    for j, log in enumerate(logs):
+        if list(log.keys())[-1] == "error":
+            if log['error']['code'] == -32005:
+                if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
+                    # drop the ' ', '[', and ',' characters
+                    from_block_new = log['error']['message']['from']
+                    from_block_new = ast.literal_eval(from_block_new)
+                    to_block_new = log['error']['message']['to']
+                    to_block_new = ast.literal_eval(to_block_new)
+                    block_step = to_block_new - from_block_new
+                    from_block_new = list_params[j][0]["fromBlock"]
+                    # let's query in smaller steps	
+                    while to_block_new < list_params[j][0]["toBlock"]:
+                        to_block_new += block_step
+                        logs += get_rpc_response(method, list_params[j][0]["address"], from_block_new, to_block_new)
+                        from_block_new += block_step
 
+    return logs
 
 def change_log_dict(log_dict):
     """
@@ -81,7 +99,19 @@ def clean_logs(contract, myevent, log):
     """
     log_dict = AttributeDict({'logs': log})
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
-    args_event = eval(eval_string)[0]
+    try:
+        # suppress user warnings here
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            args_event = eval(eval_string)
+        args_event = args_event[0]
+        t= ''
+    except IndexError:
+        # 10130190 or 10168997
+        if log_dict['logs'][0]['blockNumber'] == 10130190 or log_dict['logs'][0]['blockNumber'] == 10168997:
+            t = ''
+        args_event = None
+        args_event = None
     return args_event
 
 
@@ -140,19 +170,27 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
             if log['error']['code'] == -32005:
                 #wait for 30 seconds
                 if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
-                    from_block = log['error']['message'].split('.')[1].split(' ')[-2]
-                    # drop the ' ', '[', and ',' characters
-                    from_block = from_block[1:-1].replace(',', '')
-                    from_block = ast.literal_eval(from_block)
+                    testsdsd= ''
+                #     from_block_new = log['error']['message'].split('.')[1].split(' ')[-2]
+                #     # drop the ' ', '[', and ',' characters
+                #     from_block_new = from_block_new[1:-1].replace(',', '')
+                #     from_block_new = ast.literal_eval(from_block_new)
  
 
-                    to_block = log['error']['message'].split('.')[1].split(' ')[-1]
-                    to_block = to_block.replace(']', '')
+                #     to_block_new = log['error']['message'].split('.')[1].split(' ')[-1]
+                #     to_block_new = to_block_new.replace(']', '')
 
-                    to_block = ast.literal_eval(to_block)
-                    # return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
-
-                    raise Exception('query returned more than 10000 results', 'try using blocks {} and {}'.format(from_block, to_block))
+                #     to_block_new = ast.literal_eval(to_block_new)
+                #     # return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
+                #     from_diff = from_block_new - from_block
+                #     block_step = to_block_new - from_block_new
+                #     from_block_new = from_block
+                #     # let's query in smaller steps
+                #     while to_block_new < to_block:
+                #         to_block_new += block_step
+                #         events_clean += get_logs(contract, myevent, hash_create, from_block_new, to_block_new, number_batches)
+                #         from_block_new += block_step
+                #     test = ''
                 # 
                 time.sleep(32)
                 return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
@@ -162,5 +200,7 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                 return []
         else:
             events_clean += get_logs(contract, myevent, hash_create, int(list_params[j][0]["fromBlock"], 16),
-                                     int(list_params[j][0]["toBlock"], 16), 10) #chage number_batches to 10
+                                     int(list_params[j][0]["toBlock"], 16), number_batches) #chage number_batches to 10
+    # remove None values
+    events_clean = [x for x in events_clean if x is not None]
     return events_clean

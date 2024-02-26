@@ -26,7 +26,11 @@ def init():
     global ABI
     global ABI_FACTORY
     global BLOCKSTUDY
+    global BLOCKSTUDY_FROM
+    global DATA_PATH
     global ABI_POOL
+    global BLOCKS_PER_DAY
+    global BLOCKS_TO_BE_INACTIVE
     
     global web3
     global multicall
@@ -73,7 +77,12 @@ def init():
     ABI_FACTORY        = open(ROOT_FOLDER + "/ABIs/factory_abi.txt").read()
     ABI_POOL           = open(ROOT_FOLDER + "/ABIs/abi_pool.txt").read()
     # Define global objects
-    BLOCKSTUDY        =  13152303
+    BLOCKS_PER_DAY    =  7500
+    BLOCKSTUDY        =  19101715
+    BLOCKSTUDY_FROM   =  19101715 - BLOCKS_PER_DAY
+    BLOCKS_TO_BE_INACTIVE  =  BLOCKS_PER_DAY/2
+
+    DATA_PATH = "./data_mine"
 
     web3 = Web3(Web3.HTTPProvider(INFURA_URL))
     # multicall =  Multicall(web3.eth)
