@@ -26,9 +26,9 @@ from_block = shared.BLOCKSTUDY_FROM
 to_block = shared.BLOCKSTUDY
 
 
-tokens = pd.read_csv(out_path + "/tokens.csv")['token_address']
+tokens_dirty = pd.read_csv(out_path + "/tokens.csv")['token_address']
 health_tokens = pd.read_csv(out_path + "/healthy_tokens.csv")['token_address']
-tokens = pd.concat([tokens, health_tokens], axis=0).drop_duplicates()
+tokens = pd.concat([tokens_dirty, health_tokens], axis=0).drop_duplicates()
 
 with open(out_path + '/pools_of_token.json', 'r') as f:
     pool_dict= json.loads(f.read())
@@ -37,14 +37,10 @@ with open(out_path + '/pools_of_token.json', 'r') as f:
 # If the folder does not exist, it will be created
 if not os.path.exists(out_path + '/pool_transfer_events'):
     os.makedirs(out_path + '/pool_transfer_events')
-# if not os.path.exists(out_path + '/pool_swap_events'):
-#     os.makedirs(out_path + '/pool_swap_events')
-# if not os.path.exists(out_path + '/pool_approve_events'):
-#     os.makedirs(out_path + '/pool_approve_events')
 if not os.path.exists(out_path + '/pool_sync_events'):
     os.makedirs(out_path + '/pool_sync_events')
 
-completed_tokens = []
+completed_pools = []
 for key, entry in pool_dict.items():
     for pool in entry:
         trans_com = False
@@ -63,30 +59,30 @@ for key, entry in pool_dict.items():
             sync_com = True
         
         if trans_com and sync_com:
-            completed_tokens.append(pool['address'])
+            completed_pools.append(pool['address'])
 print('created pool events') #REACHED
 
-tokens = completed_tokens
-#* Run get_contract_creation.py 
+# #* Run get_contract_creation.py 
 
 creation_dict = {"token_address": [], "creation_block": []}
 # creation_dict = pd.read_csv(out_path + "/creation.csv")
-for token in tokens:
-    creation_dict["token_address"].append(token)
-    #184 tokens
-    creation_dict["creation_block"].append(get_contract_creation(token))
-df = pd.DataFrame(creation_dict)
-df.to_csv(out_path + "/creation.csv", index=False)
+# for token in tokens:
+#     creation_dict["token_address"].append(token)
+#     #184 tokens
+#     creation_dict["creation_block"].append(get_contract_creation(token))
+# df = pd.DataFrame(creation_dict)
+# df.to_csv(out_path + "/creation.csv", index=False)
 print('created creation_dict')# REACHED HERE
 
 #* run get_decimals.py
 
-decimals_dict = {"token_address": [], "decimals": []}
-# decimals_dict = pd.read_csv(out_path + "/decimals.csv")
+# decimals_dict = {"token_address": [], "decimals": []}
+decimals_dict = pd.read_csv(out_path + "/decimals.csv")
 for token in tokens:
-    decimals_dict["token_address"].append(token)
-    #184 tokens
-    decimals_dict["decimals"].append(get_decimal_token(token))
+    if token not in decimals_dict["token_address"]:
+        decimals_dict["token_address"].append(token)
+        #184 tokens
+        decimals_dict["decimals"].append(get_decimal_token(token))
     
 decimals = pd.DataFrame(decimals_dict)
 decimals.to_csv(out_path + "/decimals.csv", index=False)
@@ -107,5 +103,10 @@ if not os.path.exists(out_path + "/Token_tx"):
 
 #* run get_transfers.py
 for token_address in tokens:
-    if not os.path.exists(out_path + "/Token_tx/" + token_address + ".json"):
+    if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
         get_transfers(token_address, out_path + "/Token_tx", from_block, to_block)
+print('created token_tx') #REACHED HERE
+
+#extract_pool_heuristics.py
+
+# extract_transfer_heuristics.py
