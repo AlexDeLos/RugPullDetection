@@ -1,16 +1,21 @@
 import pandas as pd
 import json
 from numpy.random import choice
+import sys
+import os
+sys.path.append(os.getcwd())
 
 import shared
 shared.init()
 from features.pool_features import get_pool_features
 from features.transfer_features import get_transfer_features, get_curve
 
-df = pd.read_csv("Labelling/labeled_list.csv", index_col="token_address")
-pool_features = pd.read_csv("../data/pool_heuristics.csv", index_col="token_address")
-decimals = pd.read_csv("../data/decimals.csv", index_col="token_address")
-with open('../data/pools_of_token.json', 'r') as f:
+data_path = shared.DATA_PATH
+
+df = pd.read_csv("./ML/Labelling/labeled_list.csv", index_col="token_address")
+pool_features = pd.read_csv(data_path+"/pool_heuristics.csv", index_col="token_address")
+decimals = pd.read_csv(data_path+"/decimals.csv", index_col="token_address")
+with open(data_path+'/pools_of_token.json', 'r') as f:
     pool_of_token = json.loads(f.read())
 WETH_pools = pool_of_token[shared.WETH]
 WETH_pool_address = {pool_info['address']: pool_info for pool_info in WETH_pools}  # Set pool address as key
@@ -31,8 +36,8 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
         eval_blocks = sorted(choice(list_of_blocks, 5)) if label == 1 else sorted(choice(list_of_blocks, 1))
 
         try:
-            transfers = pd.read_csv(f"/media/victor/Elements/data/Token_tx/{address}.csv")
-            with open(f'/media/victor/Elements/data/pool_lptransfers/{pool_features.loc[address]["pool_address"]}.json',
+            transfers = pd.read_csv(data_path+f"/Token_tx/{address}.csv")
+            with open(data_path+f'/pool_transfer_events/{pool_features.loc[address]["pool_address"]}.json',
                       'r') as f:
                 lp_transfers = json.loads(f.read())
                 lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
@@ -40,7 +45,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
 
             lp_transfers.columns = list(transfers.columns) + ['type']
             # Pool features
-            with open(f'/media/victor/Elements/data/pool_sync_events/{pool_address}.json', 'r') as f:
+            with open(data_path+f'/pool_sync_events/{pool_address}.json', 'r') as f:
                 syncs = json.loads(f.read())
             syncs = pd.DataFrame([[info['blockNumber']] + list(info['args'].values()) for info in syncs])
             syncs.columns = ['blockNumber', 'reserve0', 'reserve1']

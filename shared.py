@@ -77,10 +77,10 @@ def init():
     ABI_FACTORY        = open(ROOT_FOLDER + "/ABIs/factory_abi.txt").read()
     ABI_POOL           = open(ROOT_FOLDER + "/ABIs/abi_pool.txt").read()
     # Define global objects
-    BLOCKS_PER_DAY    =  7500
-    BLOCKSTUDY        =  19101715
-    BLOCKSTUDY_FROM   =  19101715 - BLOCKS_PER_DAY
-    BLOCKS_TO_BE_INACTIVE  =  BLOCKS_PER_DAY/2
+    BLOCKS_PER_DAY    = 7500
+    BLOCKSTUDY        = 13152303
+    BLOCKSTUDY_FROM   = 10822038 #19101715 - BLOCKS_PER_DAY
+    BLOCKS_TO_BE_INACTIVE  =  BLOCKS_PER_DAY
 
     DATA_PATH = "./data_mine"
 

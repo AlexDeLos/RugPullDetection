@@ -44,17 +44,21 @@ def get_rpc_response(method, list_params=[]):
             if log['error']['code'] == -32005:
                 if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
                     # drop the ' ', '[', and ',' characters
-                    from_block_new = log['error']['message']['from']
-                    from_block_new = ast.literal_eval(from_block_new)
-                    to_block_new = log['error']['message']['to']
-                    to_block_new = ast.literal_eval(to_block_new)
-                    block_step = to_block_new - from_block_new
-                    from_block_new = list_params[j][0]["fromBlock"]
+                    from_block_new = log['error']['data']['from']
+                    to_block_new = log['error']['data']['to']
+                    from_block_old = list_params[j][0]["fromBlock"]
+                    step_size = ast.literal_eval(to_block_new) - ast.literal_eval(from_block_new)
+                    from_block_new = from_block_old
                     # let's query in smaller steps	
-                    while to_block_new < list_params[j][0]["toBlock"]:
-                        to_block_new += block_step
-                        logs += get_rpc_response(method, list_params[j][0]["address"], from_block_new, to_block_new)
-                        from_block_new += block_step
+                    while ast.literal_eval(to_block_new) < ast.literal_eval(list_params[j][0]["toBlock"]):
+                        to_block_new = hex(step_size + ast.literal_eval(from_block_new))
+                        new_list_params = list_params[j][0]
+                        new_list_params['fromBlock'] = from_block_new
+                        new_list_params['toBlock'] = to_block_new
+                        # delete the log j
+                        logs.pop(j)
+                        logs += get_rpc_response(method, [[new_list_params]])
+                        from_block_new += hex(step_size + ast.literal_eval(from_block_new))
 
     return logs
 

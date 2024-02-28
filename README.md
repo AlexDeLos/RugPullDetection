@@ -1,9 +1,4 @@
 # RugPullDetection
-
-
-### TODO
-- Notebooks: Labels, Missing analysis, Features_track, Interpretability.
-
 ### Introduction
 
 In this repository we will find the necessary tools to replicate the work made in [Do not rug on me](https://arxiv.org/abs/2201.07220). This repository, allows to download all the necessary data of UniswapV2 pools in the Ethereum blockchain. That is, all the PairPools, with their liquidity, prices and Add/remove events, all the source codes of the tokens,...
@@ -18,11 +13,14 @@ Uniswap, like other DEXs, has gained much attention this year because it is a no
 - scikit-learn
 - web3py
 - beautifulsoup4
+- pandas
+- numpy
 
 ### How to use it
 
-As mentioned in the paper, we highly recommend to have access to a full or an archive node to download all the necesary data, and add the endpoint in config.ini.
+<!-- As mentioned in the paper, we highly recommend to have access to a full or an archive node to download all the necesary data, and add the endpoint in config.ini. -->
 
+0. Make sure to modify the config.ini file with the necessary information and change the values in the shared file appropriately.
 1. Run the scripts in get_data in the following order:
   1.1 get_tokens_and_pools.py ->Done
   1.2 get_pool_events.py ->Done

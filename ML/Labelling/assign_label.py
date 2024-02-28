@@ -6,6 +6,7 @@ import shared
 
 shared.init()
 data_path = shared.DATA_PATH
+# data_path = "./data"
 
 df_pool = pd.read_csv(data_path + "/pool_heuristics.csv", index_col="token_address")
 df_transfers = pd.read_csv(data_path + "/transfer_heuristics.csv").drop_duplicates(subset=['token_address'])
@@ -40,4 +41,4 @@ for token in rug_pull_2.index:
     label_list.append([token, df_pool.loc[token]['pool_address'], 0, 2])
 
 pd.DataFrame(label_list, columns=["token_address", "pool_address", "label", "type"])\
-    .to_csv("labeled_list.csv", index=False)
+    .to_csv("../labeled_list.csv", index=False)
