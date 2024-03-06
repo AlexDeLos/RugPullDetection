@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import os
+import argparse
 sys.path.append(os.getcwd())
 import shared
 shared.init()
@@ -8,9 +9,13 @@ import numpy as np
 import json
 from tqdm import tqdm
 
-data_path = shared.DATA_PATH
+parser = argparse.ArgumentParser()
+parser.add_argument("--data_path", type=str, default=shared.DATA_PATH, help="Path to data directory")
+parser.add_argument("--token", type=str, default=None, help="Token address to extract features")
+args = parser.parse_args()
 
-# data_path = './data'
+data_path = args.data_path
+token = args.token
 
 def get_features(reserves_dict, token_address, pool_address):
     liquidity, blocks, prices, weth = [], [], [], []
@@ -79,7 +84,7 @@ def get_dict_reserves(decimal, pool_address, weth_position):
 
     return reserves
 
-with open(data_path+ './pools_of_token.json', 'r') as f:
+with open(data_path+ '/pools_of_token.json', 'r') as f:
     pool_of_token = json.loads(f.read())
 
 decimals       = pd.read_csv(data_path + '/decimals.csv', index_col="token_address")
@@ -87,6 +92,9 @@ token_features = {}
 WETH_pools     = pool_of_token[shared.WETH]
 
 for pool in tqdm(WETH_pools):
+    if token is not None:
+        if token != pool['token0'] and token != pool['token1']:
+            continue
     try:
 
         WETH_position = 1 if shared.WETH == pool['token1'] else 0
@@ -97,9 +105,8 @@ for pool in tqdm(WETH_pools):
             token_features[pool[f'token{1 - WETH_position}']] = features
 
     except Exception as err:
-        print(err)
+        print("Error: ", err)
         pass
 
 df = pd.DataFrame(token_features).transpose()
 df.to_csv(data_path+"/pool_heuristics.csv", index=False)
-

@@ -31,8 +31,9 @@ Uniswap, like other DEXs, has gained much attention this year because it is a no
 3. Run the extract pool_heuristics.py to extract the features of the pools.
 4. Run the extract extract_transfer_heuristics.py to extract the features of the tokens.
 5. Run assign_labels.py to label the tokens.
-6. ML.
-7. Jupyter Notebook.
+6. Run the build_dataset.py to build the dataset.
+7. ML.
+8. Jupyter Notebook.
 
 
 ### Example

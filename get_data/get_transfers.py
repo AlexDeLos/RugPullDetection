@@ -32,7 +32,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
         contract = shared.web3.eth.contract(Web3.toChecksumAddress(token_address), abi=shared.ABI)
         transfers = get_logs(contract, "Transfer", hash_log, start_block, end_block, number_batches=1)
     except Exception as err:
-        print(f"Exception occured: {err}")
+        print(f"Exception occured: {err}, skipping {token_address}")
         return
 
     # Save txs in a Dataframe.

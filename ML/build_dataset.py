@@ -3,6 +3,7 @@ import json
 from numpy.random import choice
 import sys
 import os
+import argparse
 sys.path.append(os.getcwd())
 
 import shared
@@ -10,9 +11,15 @@ shared.init()
 from features.pool_features import get_pool_features
 from features.transfer_features import get_transfer_features, get_curve
 
-data_path = shared.DATA_PATH
+parser = argparse.ArgumentParser()
+parser.add_argument("--data_path", type=str, default=shared.DATA_PATH, help="Path to data directory")
+parser.add_argument("--token", type=str, default=None, help="Token address to extract features")
+args = parser.parse_args()
 
-df = pd.read_csv("./ML/Labelling/labeled_list.csv", index_col="token_address")
+data_path = args.data_path
+token = args.token
+
+df = pd.read_csv(data_path+"/labeled_list.csv", index_col="token_address")
 pool_features = pd.read_csv(data_path+"/pool_heuristics.csv", index_col="token_address")
 decimals = pd.read_csv(data_path+"/decimals.csv", index_col="token_address")
 with open(data_path+'/pools_of_token.json', 'r') as f:
@@ -41,7 +48,8 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
                       'r') as f:
                 lp_transfers = json.loads(f.read())
                 lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
-                                             + [info['type']] for info in lp_transfers])
+                                             + [info['event']]
+                                             for info in lp_transfers])
 
             lp_transfers.columns = list(transfers.columns) + ['type']
             # Pool features
@@ -49,6 +57,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
                 syncs = json.loads(f.read())
             syncs = pd.DataFrame([[info['blockNumber']] + list(info['args'].values()) for info in syncs])
             syncs.columns = ['blockNumber', 'reserve0', 'reserve1']
+            print("no error")
 
         except Exception as err:
             print(err)
@@ -83,4 +92,4 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
     except:
         pass
 
-pd.DataFrame(final_dataset).to_csv("X.csv", index=False)
+pd.DataFrame(final_dataset).to_csv(data_path+"/X.csv", index=False)

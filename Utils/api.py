@@ -49,16 +49,18 @@ def get_rpc_response(method, list_params=[]):
                     from_block_old = list_params[j][0]["fromBlock"]
                     step_size = ast.literal_eval(to_block_new) - ast.literal_eval(from_block_new)
                     from_block_new = from_block_old
+                    # delete the log j
+                    logs.pop(j)
                     # let's query in smaller steps	
-                    while ast.literal_eval(to_block_new) < ast.literal_eval(list_params[j][0]["toBlock"]):
+                    new_list_params = list_params[j][0].copy()
+                    while ast.literal_eval(to_block_new) <= ast.literal_eval(list_params[j][0]["toBlock"]):
                         to_block_new = hex(step_size + ast.literal_eval(from_block_new))
-                        new_list_params = list_params[j][0]
                         new_list_params['fromBlock'] = from_block_new
                         new_list_params['toBlock'] = to_block_new
-                        # delete the log j
-                        logs.pop(j)
-                        logs += get_rpc_response(method, [[new_list_params]])
-                        from_block_new += hex(step_size + ast.literal_eval(from_block_new))
+                        res = get_rpc_response(method, [[new_list_params]])
+                        if res[0]['result'] != []:
+                            logs.append(res)
+                        from_block_new = hex(step_size + ast.literal_eval(from_block_new))
 
     return logs
 
@@ -102,6 +104,7 @@ def clean_logs(contract, myevent, log):
         Decoded logs.
     """
     log_dict = AttributeDict({'logs': log})
+    ret = []
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
     try:
         # suppress user warnings here
@@ -109,12 +112,8 @@ def clean_logs(contract, myevent, log):
             warnings.simplefilter("ignore")
             args_event = eval(eval_string)
         args_event = args_event[0]
-        t= ''
+        t = ''
     except IndexError:
-        # 10130190 or 10168997
-        if log_dict['logs'][0]['blockNumber'] == 10130190 or log_dict['logs'][0]['blockNumber'] == 10168997:
-            t = ''
-        args_event = None
         args_event = None
     return args_event
 
@@ -169,11 +168,15 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
             for event in log['result']:
                 #NEVER IN HERE CAUSE LOGS ARE EMPTY
                 log_dict = change_log_dict(event)
-                events_clean += [clean_logs(contract, myevent, [log_dict])]
+                if type(myevent) == list:
+                    for event in myevent:
+                        events_clean += [clean_logs(contract, event, [log_dict])]
+                else:
+                    events_clean += [clean_logs(contract, myevent, [log_dict])]
         elif list(log.keys())[-1] == "error":
             if log['error']['code'] == -32005:
                 #wait for 30 seconds
-                if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
+                if log['error']['message'].split('.')[0] != 'query returned more than 10000 results':
                     testsdsd= ''
                 #     from_block_new = log['error']['message'].split('.')[1].split(' ')[-2]
                 #     # drop the ' ', '[', and ',' characters

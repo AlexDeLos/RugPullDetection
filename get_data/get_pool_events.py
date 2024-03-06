@@ -8,7 +8,7 @@ from Utils.eth_utils import get_logs, events_to_json
 shared.init()
 
 
-def get_pool_events(event_name, hashed_event, pool_address, out_path, start_block, end_block):
+def get_pool_events(events_name, hashed_event, pool_address, out_path, start_block, end_block):
     """
     Get pool logs for a given pool and period.
     This function saves the events as a json in out_path.
@@ -31,7 +31,7 @@ def get_pool_events(event_name, hashed_event, pool_address, out_path, start_bloc
 
     pool = shared.web3.eth.contract(pool_address, abi=shared.ABI_POOL)
     try:
-        events = get_logs(pool, event_name, hashed_event, start_block, end_block, number_batches=10)
+        events = get_logs(pool, events_name, hashed_event, start_block, end_block, number_batches=10)
     except Exception as err:
         print(f"Exception occured: {err}")
         return
