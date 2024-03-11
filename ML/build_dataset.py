@@ -46,10 +46,10 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
             transfers = pd.read_csv(data_path+f"/Token_tx/{address}.csv")
             with open(data_path+f'/pool_transfer_events/{pool_features.loc[address]["pool_address"]}.json',
                       'r') as f:
-                lp_transfers = json.loads(f.read())
+                lp_transfers_json = json.loads(f.read())
                 lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
                                              + [info['event']]
-                                             for info in lp_transfers])
+                                             for info in lp_transfers_json])
 
             lp_transfers.columns = list(transfers.columns) + ['type']
             # Pool features

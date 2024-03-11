@@ -7,10 +7,15 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import recall_score
 from sklearn.metrics import accuracy_score
 import warnings
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 import shared
 shared.init()
 warnings.filterwarnings("ignore")
+
+data_path = shared.DATA_PATH
 
 
 def objective(trial, df, y):
@@ -40,12 +45,12 @@ def objective(trial, df, y):
 
 X = pd.read_csv(shared.DATA_PATH+"/X.csv")
 X = X.set_index("token_address")
-labels = pd.read_csv("./ML/Labelling/labeled_list.csv", index_col="token_address")
+labels = pd.read_csv(data_path+"/labeled_list.csv", index_col="token_address")
 X = X.merge(labels['label'], left_index=True, right_index=True)
 X = X.reset_index()
 df = X.drop_duplicates(subset=['token_address'])
 X = X.set_index("token_address")
-lock_features = pd.read_csv("./data_mine/token_lock_features.csv", index_col="token_address") #! Where do they get this from?
+lock_features = pd.read_csv(data_path+"/token_lock_features.csv", index_col="token_address") #! Where do they get this from?
 # X = X.merge(lock_features, how='left', left_index=True, right_index=True)
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 

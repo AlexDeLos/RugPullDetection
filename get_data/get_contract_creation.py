@@ -48,6 +48,7 @@ def get_contract_creation(token_address):
     for element in soup2:
         try:
             title = element.get('title')
+           
             if title == 'Creator Txn Hash':
                 tx_hash_creation = element.get_text()
         except KeyError:

@@ -28,7 +28,8 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
     end_block: float
         Ending block.
     """
-
+    # this removes web3's ability to convert the address to checksum
+    pool_address = shared.web3.to_checksum_address(pool_address)
     pool = shared.web3.eth.contract(pool_address, abi=shared.ABI_POOL)
     try:
         events = get_logs(pool, events_name, hashed_event, start_block, end_block, number_batches=10)
@@ -42,5 +43,10 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
     if json_events != []:
         t = ''
     with open(f'{out_path}/{pool_address}.json', 'w+') as f:
-        json.dump(json_events, f)
+        try:
+            old = json.load(f)
+        except:
+            old = []
+        old.extend(json_events)
+        json.dump(old, f)
     f.close()

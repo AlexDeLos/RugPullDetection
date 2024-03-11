@@ -9,7 +9,7 @@ import shared
 shared.init()
 
 
-def get_token_and_pools(out_path, dex='uniswap_v2'):
+def get_token_and_pools(out_path, dex='uniswap_v2', from_block = shared.BLOCKSTUDY_FROM, to_block = shared.BLOCKSTUDY):
     """
     Get tokens and pools from sushiswap or uniswap_v2.
 
@@ -22,9 +22,16 @@ def get_token_and_pools(out_path, dex='uniswap_v2'):
     """
 
     factory = shared.web3.eth.contract(shared.UNISWAP_FACTORY, abi=shared.ABI_FACTORY)
-    pool_dic, tokens = get_pools(dex, factory)
+    pool_dic, tokens = get_pools(dex, factory, from_block, to_block)
+    tokens = dict((k.lower(), v) for k,v in tokens.items())
     pd.DataFrame(tokens.keys(), columns=["token_address"]).to_csv(f"{out_path}/tokens.csv", index=False)
 
+    pool_dic = dict((k.lower(), v) for k,v in pool_dic.items())
+
+    for pool in pool_dic.keys():
+        pool_dic[pool]['token0'] = pool_dic[pool]['token0'].lower()
+        pool_dic[pool]['token1'] = pool_dic[pool]['token1'].lower()
+        pool_dic[pool]['address'] = pool_dic[pool]['address'].lower()
     with open(f"{out_path}/pool_dict.json", "w") as outfile:
         json.dump(pool_dic, outfile)
 

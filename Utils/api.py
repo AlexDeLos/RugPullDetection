@@ -39,7 +39,10 @@ def get_rpc_response(method, list_params=[]):
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, headers=headers, json=data)
     logs = response.json()
-    for j, log in enumerate(logs):
+    old_log = logs.copy()
+    results = [ [] for _ in range(len(logs)) ]
+    to_pop = []
+    for j, log in enumerate(old_log):
         if list(log.keys())[-1] == "error":
             if log['error']['code'] == -32005:
                 if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
@@ -49,19 +52,26 @@ def get_rpc_response(method, list_params=[]):
                     from_block_old = list_params[j][0]["fromBlock"]
                     step_size = ast.literal_eval(to_block_new) - ast.literal_eval(from_block_new)
                     from_block_new = from_block_old
-                    # delete the log j
-                    logs.pop(j)
-                    # let's query in smaller steps	
+                    # let's query in smaller steps
+                    to_pop.append(j)
                     new_list_params = list_params[j][0].copy()
-                    while ast.literal_eval(to_block_new) <= ast.literal_eval(list_params[j][0]["toBlock"]):
+                    while ast.literal_eval(to_block_new) < ast.literal_eval(list_params[j][0]["toBlock"]):
                         to_block_new = hex(step_size + ast.literal_eval(from_block_new))
                         new_list_params['fromBlock'] = from_block_new
                         new_list_params['toBlock'] = to_block_new
                         res = get_rpc_response(method, [[new_list_params]])
-                        if res[0]['result'] != []:
-                            logs.append(res)
+                        for i in res:
+                            if i['result'] != []:
+                                results[j].append(i)
                         from_block_new = hex(step_size + ast.literal_eval(from_block_new))
-
+    count = 0
+    for j in to_pop:
+        logs.pop(j-count)
+        count += 1
+    
+    for n, res in enumerate(results):
+        for i in res:
+            logs.insert(n,i)
     return logs
 
 def change_log_dict(log_dict):
@@ -170,7 +180,9 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                 log_dict = change_log_dict(event)
                 if type(myevent) == list:
                     for event in myevent:
-                        events_clean += [clean_logs(contract, event, [log_dict])]
+                        kl = clean_logs(contract, event, [log_dict])
+                        if kl is not None:
+                            events_clean += [kl]
                 else:
                     events_clean += [clean_logs(contract, myevent, [log_dict])]
         elif list(log.keys())[-1] == "error":
@@ -178,28 +190,7 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                 #wait for 30 seconds
                 if log['error']['message'].split('.')[0] != 'query returned more than 10000 results':
                     testsdsd= ''
-                #     from_block_new = log['error']['message'].split('.')[1].split(' ')[-2]
-                #     # drop the ' ', '[', and ',' characters
-                #     from_block_new = from_block_new[1:-1].replace(',', '')
-                #     from_block_new = ast.literal_eval(from_block_new)
- 
-
-                #     to_block_new = log['error']['message'].split('.')[1].split(' ')[-1]
-                #     to_block_new = to_block_new.replace(']', '')
-
-                #     to_block_new = ast.literal_eval(to_block_new)
-                #     # return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
-                #     from_diff = from_block_new - from_block
-                #     block_step = to_block_new - from_block_new
-                #     from_block_new = from_block
-                #     # let's query in smaller steps
-                #     while to_block_new < to_block:
-                #         to_block_new += block_step
-                #         events_clean += get_logs(contract, myevent, hash_create, from_block_new, to_block_new, number_batches)
-                #         from_block_new += block_step
-                #     test = ''
-                # 
-                time.sleep(32)
+                # time.sleep(30)
                 return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
             
             else:

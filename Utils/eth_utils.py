@@ -63,7 +63,7 @@ def chunks(data, SIZE=10000):
         yield {k:data[k] for k in islice(it, SIZE)}
 
 
-def get_pools(dex, factory): #v2 or sushi
+def get_pools(dex, factory, from_block = shared.BLOCKSTUDY_FROM, to_block = shared.BLOCKSTUDY): #v2 or sushi
     """
     Parameters
     ----------
@@ -82,14 +82,14 @@ def get_pools(dex, factory): #v2 or sushi
     if dex == 'uniswap_v2':
         # from_block = 10008355
         # to_block = shared.BLOCKSTUDY
-        from_block = shared.BLOCKSTUDY_FROM
-        to_block = shared.BLOCKSTUDY
+        # from_block = shared.BLOCKSTUDY_FROM
+        # to_block = shared.BLOCKSTUDY
         number_batches = 10
         pools = get_logs(factory, 'PairCreated', hash_create, from_block, to_block, number_batches)
     
     if dex == 'sushiswap':
-        from_block = shared.BLOCKSTUDY_FROM
-        to_block = shared.BLOCKSTUDY
+        # from_block = shared.BLOCKSTUDY_FROM
+        # to_block = shared.BLOCKSTUDY
         number_batches = 10
         pools = get_logs(factory, 'PairCreated', hash_create, from_block, to_block, number_batches)
 

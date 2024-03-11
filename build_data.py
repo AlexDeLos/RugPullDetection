@@ -5,7 +5,6 @@ from get_data.get_pool_events import get_pool_events
 from get_data.get_contract_creation import get_contract_creation
 from get_data.get_source_code import get_source_code
 from get_data.get_transfers import get_transfers
-from Utils.abi_info import obtain_hash_event
 from get_data.get_tokens_pools import get_token_and_pools
 import json
 import subprocess
@@ -13,7 +12,7 @@ import os
 
 import shared
 shared.init()
-out_path = "./data_mine"
+out_path = "./data_mine_2"
 
 
 # This will take a while, get comfortable <3
@@ -66,18 +65,17 @@ print('created pool events') #REACHED
 
 creation_dict = {"token_address": [], "creation_block": []}
 # creation_dict = pd.read_csv(out_path + "/creation.csv")
-# for token in tokens:
-#     creation_dict["token_address"].append(token)
-#     #184 tokens
-#     creation_dict["creation_block"].append(get_contract_creation(token))
-# df = pd.DataFrame(creation_dict)
-# df.to_csv(out_path + "/creation.csv", index=False)
+for token in tokens:
+    creation_dict["token_address"].append(token)
+    creation_dict["creation_block"].append(get_contract_creation(token))
+df = pd.DataFrame(creation_dict)
+df.to_csv(out_path + "/creation.csv", index=False)
 print('created creation_dict')# REACHED HERE
 
 #* run get_decimals.py
 
-# decimals_dict = {"token_address": [], "decimals": []}
-decimals_dict = pd.read_csv(out_path + "/decimals.csv")
+decimals_dict = {"token_address": [], "decimals": []}
+# decimals_dict = pd.read_csv(out_path + "/decimals.csv")
 decimals_dict = decimals_dict.to_dict(orient='list')
 for token in tokens:
     if token not in decimals_dict["token_address"]:
@@ -113,9 +111,9 @@ print('created token_tx') #REACHED HERE
 
 
 
-subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py"])
+subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path])
 
 #extract_pool_heuristics.py
 
-subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py"])
+subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path])
 # extract_transfer_heuristics.py

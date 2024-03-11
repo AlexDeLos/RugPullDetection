@@ -89,7 +89,7 @@ with open(data_path+ '/pools_of_token.json', 'r') as f:
 
 decimals       = pd.read_csv(data_path + '/decimals.csv', index_col="token_address")
 token_features = {}
-WETH_pools     = pool_of_token[shared.WETH]
+WETH_pools     = pool_of_token[shared.WETH.lower()]
 
 for pool in tqdm(WETH_pools):
     if token is not None:
@@ -97,7 +97,7 @@ for pool in tqdm(WETH_pools):
             continue
     try:
 
-        WETH_position = 1 if shared.WETH == pool['token1'] else 0
+        WETH_position = 1 if shared.WETH.lower() == pool['token1'] else 0
         reserves_dict = get_dict_reserves(decimals.loc[pool[f'token{1 - WETH_position}']].iloc[0],
                                           pool['address'], WETH_position)
         if reserves_dict:
