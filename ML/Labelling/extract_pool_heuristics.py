@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import os
+import ast
 import argparse
 sys.path.append(os.getcwd())
 import shared
@@ -12,10 +13,13 @@ from tqdm import tqdm
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_path", type=str, default=shared.DATA_PATH, help="Path to data directory")
 parser.add_argument("--token", type=str, default=None, help="Token address to extract features")
+parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="Block to study")
 args = parser.parse_args()
 
 data_path = args.data_path
-token = args.token
+tokens = args.token
+to_block = args.to_block
+
 
 def get_features(reserves_dict, token_address, pool_address):
     liquidity, blocks, prices, weth = [], [], [], []
@@ -54,12 +58,12 @@ def get_features(reserves_dict, token_address, pool_address):
         'total_activity': len(blocks),
         'activity_from_max_to_min': len(liquidity[idx_max_liq:idx_min_liq])/len(liquidity),
         'activity_from_min': len(liquidity[idx_min_liq:])/len(liquidity),
-        'inactive': 1 if shared.BLOCKSTUDY - blocks[-1] > 160000 else 0,
+        'inactive': 1 if to_block - blocks[-1] > 160000 else 0,
         'liq_MDD': liq_MDD,
         'liq_RC': liq_RC,
         'price_MDD': price_MDD,
         'price_RC': price_RC,
-        'late_creation': 1 if shared.BLOCKSTUDY - blocks[0] < 160000 else 0
+        'late_creation': 1 if to_block - blocks[0] < 160000 else 0
     }
 
     return features_token
@@ -70,7 +74,7 @@ def get_dict_reserves(decimal, pool_address, weth_position):
         events = json.loads(f.read())
     f.close()
 
-    if len(events) < 5:
+    if len(events) < 5 and tokens is None:
         return False
 
     token_position = 1 - WETH_position
@@ -92,8 +96,8 @@ token_features = {}
 WETH_pools     = pool_of_token[shared.WETH.lower()]
 
 for pool in tqdm(WETH_pools):
-    if token is not None:
-        if token != pool['token0'] and token != pool['token1']:
+    if tokens is not None:
+        if not pool['token0'] == tokens and not pool['token1'] == tokens:
             continue
     try:
 
@@ -109,4 +113,9 @@ for pool in tqdm(WETH_pools):
         pass
 
 df = pd.DataFrame(token_features).transpose()
+try:
+    df_old = pd.read_csv(data_path+"/pool_heuristics.csv")
+    df = pd.concat([df_old, df])
+except:
+    pass
 df.to_csv(data_path+"/pool_heuristics.csv", index=False)

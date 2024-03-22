@@ -5,6 +5,7 @@ from get_data.get_pool_events import get_pool_events
 from get_data.get_contract_creation import get_contract_creation
 from get_data.get_source_code import get_source_code
 from get_data.get_transfers import get_transfers
+from Utils.abi_info import obtain_hash_event
 from get_data.get_tokens_pools import get_token_and_pools
 import json
 import subprocess
@@ -12,18 +13,18 @@ import os
 
 import shared
 shared.init()
-out_path = "./data_mine_2"
+out_path = "./data_mine_4"
 
+from_block = shared.BLOCKSTUDY_FROM
+to_block =19450000 #shared.BLOCKSTUDY
 
 # This will take a while, get comfortable <3
 print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
-# get_token_and_pools(out_path, dex='uniswap_v2')
+# get_token_and_pools(out_path, dex='uniswap_v2',from_block=from_block, to_block=to_block)
 print('created tokens and pools')
 
-from_block = shared.BLOCKSTUDY_FROM
-to_block = shared.BLOCKSTUDY
 
 
 tokens_dirty = pd.read_csv(out_path + "/tokens.csv")['token_address']
@@ -46,13 +47,15 @@ for key, entry in pool_dict.items():
         trans_com = False
         sync_com = False
         if not os.path.exists(out_path + '/pool_transfer_events/'+ pool['address'] + '.json'):
-            get_pool_events(['Transfer','Burn','Mint'], None , pool['address'], out_path + '/pool_transfer_events', from_block, to_block)
-
+            get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block, to_block)
+            get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block, to_block)
+            get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block, to_block)
+            # get_pool_events(['Transfer','Burn','Mint'], None , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
             trans_com = True
         else:
             trans_com = True
         if not os.path.exists(out_path + '/pool_sync_events/'+ pool['address'] + '.json'):
-            get_pool_events('Sync', None , pool['address'], out_path + '/pool_sync_events', from_block, to_block)
+            get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', from_block, to_block)
             sync_com = True
         else:
             sync_com = True

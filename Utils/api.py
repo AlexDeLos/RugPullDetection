@@ -64,6 +64,12 @@ def get_rpc_response(method, list_params=[]):
                             if i['result'] != []:
                                 results[j].append(i)
                         from_block_new = hex(step_size + ast.literal_eval(from_block_new))
+                elif log['error']['message'].split('.')[0] == 'project ID request rate exceeded':
+                    
+                    print(log['error'])
+                    print('exceeded rate limit, waiting 30 seconds')
+                    time.sleep(30)
+                    return get_rpc_response(method, list_params)
     count = 0
     for j in to_pop:
         logs.pop(j-count)
@@ -123,7 +129,7 @@ def clean_logs(contract, myevent, log):
             args_event = eval(eval_string)
         args_event = args_event[0]
         t = ''
-    except IndexError:
+    except IndexError as e:
         args_event = None
     return args_event
 
@@ -190,7 +196,7 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                 #wait for 30 seconds
                 if log['error']['message'].split('.')[0] != 'query returned more than 10000 results':
                     testsdsd= ''
-                # time.sleep(30)
+                time.sleep(30)
                 return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
             
             else:

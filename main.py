@@ -17,27 +17,51 @@ import os
 import shared
 shared.init()
 
-out_path = "./temp_in"
+out_path = "./temp_in_4"
 
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
-#these are block from Shivainu token
-from_block = 10522038
-eval_block = 15411914
+#these are block from Jet coin token
+
+# from_block = 10008355
+# eval_block =13152303 #shared.BLOCKSTUDY
+from_block = 4719568
+eval_block = shared.BLOCKSTUDY
+#! do the total number of transactions change anything? do I need to normalize the data?
+from_block_trans = 8928158
+eval_block_trans = shared.BLOCKSTUDY
 
 
 # This will take a while, get comfortable <3
 print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
+
 # get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+# get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
+
 # get_token_and_pools(out_path, dex='sushiswap')
 print('created tokens and pools')
 
 # token = '0x9359CbaF496816a632A31C6D03f038f31Be6D3cf' #! no pools found for this
-token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce'.lower() # -> shivainu token also gives error
+# token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce'.lower() # -> shivainu token also gives error
 # token = '0xdac17f958d2ee523a2206206994597c13d831ec7' # -> USDT, very active tokens take a LONG time
+# token = '0x6B0FaCA7bA905a86F221CEb5CA404f605e5b3131'.lower() # -> DEFI token
+# token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768'.lower() # -> Jet coin token (healthy token)
+#! token ='0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0'.lower() # -> Polygon MATIC token
+token = '0x6b175474e89094c44da98b954eedeac495271d0f'.lower() # -> DAI token  _> was 1
+health_tokens = pd.read_csv('./healthy_tokens.csv')
+# tokens to test 21/03./2024
+# token = '0x42fd79daf2a847b59d487650c68c2d7e52d752f6'.lower() # -> xTrax high risk
 
+#! token = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'.lower()
 
+#! full scam 0x7ef1081ecc8b5b5b130656a41d4ce4f89dbbcc8c -> CP3RToken
+# created on 11213887
+
+#* Good tokens
+# token = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'.lower() # -> USDC token
+# token = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'.lower() # -> WETH token
+ 
 with open(out_path + '/pools_of_token.json', 'r') as f:
     pools_of_token= json.loads(f.read())
 tokens = [token]
@@ -57,19 +81,30 @@ for key, entry in pools_of_token.items():
     for pool in entry:
         trans_com = False
         sync_com = False
+        
+        if (pool['token0'] in tokens or pool['token1'] in tokens):
+            # print(pool['token0'], pool['token1'])
+            if any(s.lower() in tokens for s in health_tokens['token_address'].values):
+                # if the token is in the health tokens then both need to be in the list
+                paired_with_stable = (any(s.lower() == pool['token0'] for s in health_tokens['token_address'].values) and any(s.lower() == pool['token1'] for s in health_tokens['token_address'].values))
+            else:
+                paired_with_stable = (any(s.lower() == pool['token0'] for s in health_tokens['token_address'].values) or any(s.lower() == pool['token1'] for s in health_tokens['token_address'].values))
+        else:
+            paired_with_stable = False
+
         if not os.path.exists(out_path + '/pool_transfer_events/'+ pool['address'] + '.json'):
-            if pool['token0'] == token or pool['token1'] == token:
-                get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block, eval_block)
-                get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block, eval_block)
-                get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block, eval_block)
-                # get_pool_events(['Transfer','Burn','Mint'], None , pool['address'], out_path + '/pool_transfer_events', from_block, eval_block)
+            if paired_with_stable:
+                #obtain_hash_event('Transfer(address,address,uint256)')
+                get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
+                get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
+                get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
+                # get_pool_events(['Transfer','Burn','Mint'], None , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
                 trans_com = True
         else:
             trans_com = True
         if not os.path.exists(out_path + '/pool_sync_events/'+ pool['address'] + '.json'):
-            if pool['token0'] == token or pool['token1'] == token:
-                # get_pool_events('Sync', None , pool['address'], out_path + '/pool_sync_events', from_block, eval_block)
-                get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', from_block, eval_block)
+            if paired_with_stable:
+                get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', from_block_trans, eval_block_trans)
                 sync_com = True
         else:
             sync_com = True
@@ -121,7 +156,7 @@ if not os.path.exists(out_path + "/Token_tx"):
 #* run get_transfers.py
 for token_address in tokens:
     if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
-        get_transfers(token_address, out_path + "/Token_tx", from_block, eval_block)
+        get_transfers(token_address, out_path + "/Token_tx", from_block_trans, eval_block_trans)
 print('created token_tx') #REACHED HERE
 
 #* RAN IT UP TO HERE
@@ -131,15 +166,16 @@ print('created token_tx') #REACHED HERE
 
 #extract_pool_heuristics.py
 
-subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--token", token])
+subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--token", tokens[0], "--to_block", str(eval_block_trans)])
 # extract_transfer_heuristics.py
 
-subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", token, "--to_block", str(eval_block)])
+subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", token[0], "--to_block", str(eval_block_trans)])
 
 
 # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
 
-
+pool_features = pd.read_csv(out_path+"/pool_heuristics.csv", index_col="token_address")
+# for token in tokens:
 # token_address (GOT IT)
 # eval_block (Input)
 # num_transactions (using the get_transfer_features)
@@ -154,16 +190,20 @@ curve_dict = get_curve(transfers.values)
 tx_curve = curve_dict['tx_curve']
 
 # liq_curve
-pool_addresses = pools_of_token[token][0]['address']
+features = pool_features.loc[token]
+pool_address = features['pool_address']
+# pool_addresses = []
+# lp_transfers_json = []
+# for pool in pools_of_token[token]:
+#     pool_addresses.append(pool['address'])
 
-with open(out_path+f'/pool_transfer_events/{pool_addresses}.json',
+with open(out_path+f'/pool_transfer_events/{pool_features.loc[token]["pool_address"]}.json',
             'r') as f:
     lp_transfers_json = json.loads(f.read())
+    lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
+                                    + [info['event']] # [info['type']] for info in lp_transfers])
+                                    for info in lp_transfers_json])
 
-lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
-                    + [info['event']]
-                    for info in lp_transfers_json])
-del lp_transfers[6]
 lp_transfers.columns = list(transfers.columns) + ['type']
 # called like this on build_dataset: get_curve(lp_transfers.loc[lp_transfers.block_number < eval_block].values)['tx_curve']})
 liq_curve = get_curve(lp_transfers.values)
@@ -182,7 +222,6 @@ difference_token_pool = lp_transfers['block_number'].iloc[0] - transfers['block_
 # WETH
 # prices
 # liquidity
-pool_features = pd.read_csv(out_path+"/pool_heuristics.csv", index_col="token_address")
 features = pool_features.loc[token]
 pool_address = features['pool_address']
 WETH_pools = pools_of_token[shared.WETH.lower()]
@@ -197,7 +236,7 @@ syncs = pd.DataFrame([[info['blockNumber']] + list(info['args'].values()) for in
 syncs.columns = ['blockNumber', 'reserve0', 'reserve1']
 decimals = pd.read_csv(out_path+"/decimals.csv", index_col="token_address")
 decimal = decimals.loc[token].iloc[0]
-pool_feature_dict = get_pool_features(syncs.loc[syncs.blockNumber < eval_block], WETH_position, decimal)
+pool_feature_dict = get_pool_features(syncs.loc[syncs.blockNumber < eval_block_trans], WETH_position, decimal)
 
 #'num_transactions', 'n_unique_addresses', 'cluster_coeff', 'tx_curve', 'liq_curve', 'Mint', 'Burn', 'Transfer', 'difference_token_pool', 'n_syncs', 'WETH', 'prices', 'liquidity'
 X_dict = {'num_transactions': num_transactions, 'n_unique_addresses': n_unique_addresses, 'cluster_coeff': cluster_coeff, 'tx_curve': tx_curve, 'liq_curve': liq_curve, 'Mint': mint, 'Burn': burn, 'Transfer': transfer, 'difference_token_pool': difference_token_pool, 'n_syncs': pool_feature_dict['n_syncs'], 'WETH': pool_feature_dict['WETH'], 'prices': pool_feature_dict['prices'], 'liquidity': pool_feature_dict['liquidity']} 

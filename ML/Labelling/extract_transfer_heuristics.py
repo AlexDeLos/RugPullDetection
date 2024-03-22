@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import os
+import ast
 import argparse
 sys.path.append(os.getcwd())
 import shared
@@ -14,7 +15,7 @@ parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="To 
 args = parser.parse_args()
 
 data_path = args.data_path
-token = args.token
+token_list = args.token
 to_block = args.to_block
 
 # FROM PAPER: "If more than one month has passed between the last movement 
@@ -24,8 +25,8 @@ to_block = args.to_block
 
 
 tokens = pd.read_csv(data_path + "/tokens.csv")
-if token is not None:
-    tokens = tokens[tokens['token_address'] == token]
+if token_list is not None:
+    tokens = tokens[tokens['token_address'] == token_list]
 
 active_transfer_dict = {"token_address": [], "inactive_transfers": []}
 
@@ -45,5 +46,11 @@ for token in tokens['token_address']:
         print("No transfer data for token: ", token)
 
 df = pd.DataFrame(active_transfer_dict)
+
+try:
+    df_old = pd.read_csv(data_path+"/transfer_heuristics.csv")
+    df = pd.concat([df_old, df], ignore_index=True)
+except FileNotFoundError:
+    pass
 df.to_csv(data_path+"/transfer_heuristics.csv", index=False)
 print("Finished transfer heuristics.")

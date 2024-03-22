@@ -35,6 +35,7 @@ for token in healthy_tokens:
     except:
         pass
 
+#? what makes it type 1 or 2?
 df_inactius = df.loc[(df["inactive"] == 1) & (df['late_creation'] == 0)]
 rug_pull    = df_inactius.loc[(df_inactius["liq_MDD"] == -1)]
 rug_pull_1  = rug_pull.loc[rug_pull['liq_RC'] <= 0.2]

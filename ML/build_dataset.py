@@ -29,8 +29,9 @@ WETH_pool_address = {pool_info['address']: pool_info for pool_info in WETH_pools
 
 iteration = 0
 final_dataset = []
+# address is a token address
 for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
-
+ 
     try:
         features = pool_features.loc[address]
         pool_address = features['pool_address']
@@ -48,7 +49,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
                       'r') as f:
                 lp_transfers_json = json.loads(f.read())
                 lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
-                                             + [info['event']]
+                                             + [info['event']] # [info['type']] for info in lp_transfers])
                                              for info in lp_transfers_json])
 
             lp_transfers.columns = list(transfers.columns) + ['type']

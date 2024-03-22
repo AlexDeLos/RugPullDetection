@@ -42,11 +42,12 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
     print(f"Events: {json_events}")
     if json_events != []:
         t = ''
-    with open(f'{out_path}/{pool_address}.json', 'w+') as f:
-        try:
+    try:
+        with open(f'{out_path}/{pool_address}.json', 'r+') as f:
             old = json.load(f)
-        except:
-            old = []
+    except:
+        old = []
+    with open(f'{out_path}/{pool_address}.json', 'w+') as f:
         old.extend(json_events)
         json.dump(old, f)
     f.close()
