@@ -124,15 +124,16 @@ def clean_logs(contract, myevent, log):
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
     try:
         # suppress user warnings here
-        print("eval_string: ", eval_string)
         args_event = eval(eval_string)
-        print("ran -------------------------------------------------------------------")
         args_event = args_event[0]
         t = ''
     except IndexError as e:
         args_event = None
     return args_event
 
+string = "contract.events.PairCreated().processReceipt(AttributeDict({'logs': [AttributeDict({'address': '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f', 'blockHash': HexBytes('0x359d1dc4f14f9a07cba3ae8416958978ce98f78ad7b8d505925dad9722081f04'), 'blockNumber': 10008355, 'data': '0x000000000000000000000000b4e16d0168e52d35cacd2c6185b44281ec28c9dc0000000000000000000000000000000000000000000000000000000000000001', 'logIndex': 34, 'removed': False, 'topics': [HexBytes('0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9'), HexBytes('0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'), HexBytes('0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')], 'transactionHash': HexBytes('0xd07cbde817318492092cc7a27b3064a69bd893c01cb593d6029683ffd290ab3a'), 'transactionIndex': 38})]}))"
+
+string1 = "contract.events.PairCreated().processReceipt(AttributeDict({'logs': [AttributeDict({'address': '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f', 'blockHash': HexBytes('0x359d1dc4f14f9a07cba3ae8416958978ce98f78ad7b8d505925dad9722081f04'), 'blockNumber': 10008355, 'data': '0x000000000000000000000000b4e16d0168e52d35cacd2c6185b44281ec28c9dc0000000000000000000000000000000000000000000000000000000000000001', 'logIndex': 34, 'removed': False, 'topics': [HexBytes('0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9'), HexBytes('0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'), HexBytes('0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')], 'transactionHash': HexBytes('0xd07cbde817318492092cc7a27b3064a69bd893c01cb593d6029683ffd290ab3a'), 'transactionIndex': 38})]}))"
 
 def get_logs(contract, myevent, hash_create, from_block, to_block, number_batches):
     """
