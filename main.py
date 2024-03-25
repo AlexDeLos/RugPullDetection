@@ -17,7 +17,7 @@ import os
 import shared
 shared.init()
 
-out_path = "./temp_in_4"
+out_path = "./temp_in_test"
 
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
 #these are block from Jet coin token
