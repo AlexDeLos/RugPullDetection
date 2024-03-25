@@ -33,7 +33,9 @@ def get_rpc_response(method, list_params=[]):
                     'fromBlock': '0xa7d8c0', 'toBlock': '0xa83da0',
                     'topics': ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef']}]]
     """
-    url = shared.INFURA_URL
+    ulr_index = 0
+    urls = shared.INFURA_URLS
+    url = urls[ulr_index]
     list_params = list_params or []
     data = [{"jsonrpc": "2.0", "method": method, "params": params, "id": 1} for params in list_params]
     headers = {"Content-Type": "application/json"}
@@ -65,10 +67,13 @@ def get_rpc_response(method, list_params=[]):
                                 results[j].append(i)
                         from_block_new = hex(step_size + ast.literal_eval(from_block_new))
                 elif log['error']['message'].split('.')[0] == 'project ID request rate exceeded':
-                    
-                    print(log['error'])
-                    print('exceeded rate limit, waiting 30 seconds')
+                    warnings.warn('exceeded rate limit, waiting 30 seconds')
                     time.sleep(30)
+                    return get_rpc_response(method, list_params)
+                else:
+                    warnings.warn("change infura url to another one, this one is not working anymore wait 24h?")
+                    url_index= ulr_index + 1
+                    url_index = url_index % len(urls)
                     return get_rpc_response(method, list_params)
     count = 0
     for j in to_pop:
@@ -198,6 +203,11 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                 if log['error']['message'].split('.')[0] != 'query returned more than 10000 results':
                     testsdsd= ''
                 time.sleep(30)
+                warnings.warn("change infura url to another one, this one is not working anymore wait 24h")
+                if shared.INFURA_URL == shared.INFURA_URL1:
+                    shared.INFURA_URL = shared.INFURA_URL2
+                else:
+                    shared.INFURA_URL = shared.INFURA_URL1
                 return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
             
             else:

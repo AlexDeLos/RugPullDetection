@@ -4,7 +4,7 @@ from web3 import Web3
 
 def init():
 
-    global INFURA_URL
+    global INFURA_URLS
     global USE_POOL_INFURA
     global USE_WALLET_INFURA
     global API_KEY
@@ -40,7 +40,8 @@ def init():
     config.read(ROOT_FOLDER + "/config.ini")
 
     # # Get infura node url and logic booleans
-    INFURA_URL         = config.get("NODE", "INFURA_URL")
+    # INFURA_URL_TO_USE  = 0
+    INFURA_URLS       = [config.get("NODE", "INFURA_URL_0"), config.get("NODE", "INFURA_URL_1")]
     USE_POOL_INFURA    = config.getboolean("NODE", "USE_POOL_INFURA")
     USE_WALLET_INFURA  = config.getboolean("NODE", "USE_WALLET_INFURA")
     
@@ -84,5 +85,5 @@ def init():
 
     DATA_PATH = "./data_mine"
 
-    web3 = Web3(Web3.HTTPProvider(INFURA_URL))
+    web3 = Web3(Web3.HTTPProvider(INFURA_URLS[0]))
     # multicall =  Multicall(web3.eth)
