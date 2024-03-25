@@ -129,6 +129,11 @@ dmypy.json
 .pyre/
 
 # Data
-*.csv
-*.json
-./data
+# *.csv
+# *.json
+data_mine/*
+data_mine_2/*
+data_mine_3/*
+data_mine_4/*
+models/*
+temp_in_*/*
