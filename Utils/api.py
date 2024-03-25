@@ -124,7 +124,9 @@ def clean_logs(contract, myevent, log):
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
     try:
         # suppress user warnings here
+        print("eval_string: ", eval_string)
         args_event = eval(eval_string)
+        print("ran -------------------------------------------------------------------")
         args_event = args_event[0]
         t = ''
     except IndexError as e:
