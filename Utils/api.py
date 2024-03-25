@@ -74,7 +74,15 @@ def get_rpc_response(method, list_params=[]):
                     warnings.warn("change infura url to another one, this one is not working anymore wait 24h?")
                     url_index= ulr_index + 1
                     url_index = url_index % len(urls)
-                    return get_rpc_response(method, list_params)
+                    count = count + 1
+                    if count < len(urls) +1:
+                        return get_rpc_response(method, list_params)
+                    else:
+                        raise Exception("No URLS available")
+                    
+            else:
+                count = 0
+                
     count = 0
     for j in to_pop:
         logs.pop(j-count)
@@ -204,11 +212,7 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                     testsdsd= ''
                 time.sleep(30)
                 warnings.warn("change infura url to another one, this one is not working anymore wait 24h")
-                if shared.INFURA_URL == shared.INFURA_URL1:
-                    shared.INFURA_URL = shared.INFURA_URL2
-                else:
-                    shared.INFURA_URL = shared.INFURA_URL1
-                return get_logs(contract, myevent, hash_create, from_block, to_block, number_batches)
+                raise Exception("change infura url to another one, this one is not working anymore wait 24h")
             
             else:
                 print(log['error'])
