@@ -119,4 +119,6 @@ subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_pat
 #extract_pool_heuristics.py
 
 subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path])
+
+subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path])
 # extract_transfer_heuristics.py

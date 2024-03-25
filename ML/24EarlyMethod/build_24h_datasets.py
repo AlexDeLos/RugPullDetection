@@ -14,7 +14,7 @@ from features.transfer_features import get_transfer_features, get_curve
 
 data_path = shared.DATA_PATH
 
-df = pd.read_csv(data_path + "labeled_list.csv", index_col="token_address")
+df = pd.read_csv(data_path + "/labeled_list.csv", index_col="token_address")
 pool_features = pd.read_csv(data_path + "/pool_heuristics.csv", index_col="token_address")
 decimals = pd.read_csv(data_path + "/decimals.csv", index_col="token_address")
 with open(data_path + '/pools_of_token.json', 'r') as f:
@@ -38,14 +38,17 @@ for hour in range(13, 25):
         #  Open token transfers, lp transfers and syncs.
         try:
             # Open token transfers
-            transfers = pd.read_csv(data_path + f"/transfers{address}.csv")
+            transfers = pd.read_csv(data_path + f"/Token_tx/{address}.csv")
+            if transfers.empty:
+                print(f"Empty transfer file for {address}")
+                continue
 
             # Open lp transfers
             with open(data_path + f'/pool_transfer_events/'
                       f'{pool_features.loc[address]["pool_address"]}.json', 'r') as f:
                 lp_transfers = json.loads(f.read())
                 lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']]
-                                             + list(info['args'].values()) + [info['type']]
+                                             + list(info['args'].values()) + [info['event']]
                                              for info in lp_transfers])
             lp_transfers.columns = list(transfers.columns) + ['type']
 
@@ -88,4 +91,4 @@ for hour in range(13, 25):
         iteration += 1
         print(hour, iteration, len(df.index.tolist()))
 
-    pd.DataFrame(final_dataset).to_csv(f"CSVS_/X_{hour}h.csv", index=False)
+    pd.DataFrame(final_dataset).to_csv(data_path + f"/hours_dataset/X_{hour}h.csv", index=False)
