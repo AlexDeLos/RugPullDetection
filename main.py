@@ -18,10 +18,7 @@ import logging
 import shared
 shared.init()
 
-logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s",level=logging.DEBUG)
-
-logging.warning("warning")
-
+logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s")#, level=logging.DEBUG)
 
 out_path = "./temp_in_test"
 
@@ -33,7 +30,7 @@ out_path = "./temp_in_test"
 from_block = 10008355
 eval_block = shared.BLOCKSTUDY
 #! do the total number of transactions change anything? do I need to normalize the data?
-from_block_trans = 10008355
+from_block_trans = shared.BLOCKSTUDY - 75000
 eval_block_trans = shared.BLOCKSTUDY
 
 
@@ -42,7 +39,7 @@ print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
-get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+# get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
 # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
