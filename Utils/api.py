@@ -3,6 +3,7 @@ from web3.datastructures import AttributeDict
 from hexbytes import HexBytes
 import sys
 import time
+import logging
 import warnings
 import ast
 sys.path.append("../")
@@ -46,6 +47,7 @@ def get_rpc_response(method, list_params=[]):
     to_pop = []
     for j, log in enumerate(old_log):
         if list(log.keys())[-1] == "error":
+            logging.warning(f"Error in log {j}: {log['error']}")
             if log['error']['code'] == -32005:
                 if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
                     # drop the ' ', '[', and ',' characters
@@ -68,9 +70,12 @@ def get_rpc_response(method, list_params=[]):
                         from_block_new = hex(step_size + ast.literal_eval(from_block_new))
                 elif log['error']['message'].split('.')[0] == 'project ID request rate exceeded':
                     warnings.warn('exceeded rate limit, waiting 30 seconds')
+                    logging.warning('exceeded rate limit, waiting 30 seconds')
                     time.sleep(30)
                     return get_rpc_response(method, list_params)
                 else:
+                    logging.warning("change infura url to another one, this one is not working anymore wait 24h?")
+
                     warnings.warn("change infura url to another one, this one is not working anymore wait 24h?")
                     url_index= ulr_index + 1
                     url_index = url_index % len(urls)
@@ -78,6 +83,7 @@ def get_rpc_response(method, list_params=[]):
                     if count < len(urls) +1:
                         return get_rpc_response(method, list_params)
                     else:
+                        logging.error("No URLS available")
                         raise Exception("No URLS available")
                     
             else:
@@ -132,6 +138,7 @@ def clean_logs(contract, myevent, log):
     args_event: AttributeDict
         Decoded logs.
     """
+    logging.info(f"Cleaning logs for event {myevent} on contract {contract.address}")
     log_dict = AttributeDict({'logs': log})
     ret = []
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
@@ -143,10 +150,6 @@ def clean_logs(contract, myevent, log):
     except IndexError as e:
         args_event = None
     return args_event
-
-string = "contract.events.PairCreated().processReceipt(AttributeDict({'logs': [AttributeDict({'address': '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f', 'blockHash': HexBytes('0x359d1dc4f14f9a07cba3ae8416958978ce98f78ad7b8d505925dad9722081f04'), 'blockNumber': 10008355, 'data': '0x000000000000000000000000b4e16d0168e52d35cacd2c6185b44281ec28c9dc0000000000000000000000000000000000000000000000000000000000000001', 'logIndex': 34, 'removed': False, 'topics': [HexBytes('0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9'), HexBytes('0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'), HexBytes('0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')], 'transactionHash': HexBytes('0xd07cbde817318492092cc7a27b3064a69bd893c01cb593d6029683ffd290ab3a'), 'transactionIndex': 38})]}))"
-
-string1 = "contract.events.PairCreated().processReceipt(AttributeDict({'logs': [AttributeDict({'address': '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f', 'blockHash': HexBytes('0x359d1dc4f14f9a07cba3ae8416958978ce98f78ad7b8d505925dad9722081f04'), 'blockNumber': 10008355, 'data': '0x000000000000000000000000b4e16d0168e52d35cacd2c6185b44281ec28c9dc0000000000000000000000000000000000000000000000000000000000000001', 'logIndex': 34, 'removed': False, 'topics': [HexBytes('0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9'), HexBytes('0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'), HexBytes('0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')], 'transactionHash': HexBytes('0xd07cbde817318492092cc7a27b3064a69bd893c01cb593d6029683ffd290ab3a'), 'transactionIndex': 38})]}))"
 
 def get_logs(contract, myevent, hash_create, from_block, to_block, number_batches):
     """
@@ -193,6 +196,7 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                         ]
 
     logs = get_rpc_response("eth_getLogs", list_params)
+    logging.info(f"From block: {from_block}, to block: {to_block}, number of logs: {len(logs)}")
     for j, log in enumerate(logs):
         if list(log.keys())[-1] == "result":
             for event in log['result']:

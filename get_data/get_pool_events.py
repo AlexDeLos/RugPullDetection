@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 import shared
@@ -38,16 +39,17 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
         return
 
     json_events = events_to_json(events)
+    logging.info(f"Saving {pool_address}.json")
     print(f"Saving {pool_address}.json")
+    logging.info(f"Events {events_name}: {json_events}")
     print(f"Events {events_name}: {json_events}")
-    if json_events != []:
-        t = ''
     try:
         with open(f'{out_path}/{pool_address}.json', 'r+') as f:
             old = json.load(f)
     except:
         old = []
     with open(f'{out_path}/{pool_address}.json', 'w+') as f:
+        logging.info(f"Dumping {pool_address}.json")
         old.extend(json_events)
         json.dump(old, f)
     f.close()

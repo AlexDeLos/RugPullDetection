@@ -18,7 +18,10 @@ import logging
 import shared
 shared.init()
 
-logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s")
+logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s",level=logging.DEBUG)
+
+logging.warning("warning")
+
 
 out_path = "./temp_in_test"
 
@@ -43,6 +46,7 @@ get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_bloc
 # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
+logging.info("get_token_and_pools ran")
 print('created tokens and pools')
 
 # token = '0x9359CbaF496816a632A31C6D03f038f31Be6D3cf' #! no pools found for this
@@ -102,18 +106,21 @@ for key, entry in pools_of_token.items():
                 get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
                 get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
                 # get_pool_events(['Transfer','Burn','Mint'], None , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
+                logging.info(f"Pool {pool['address']} transfer events created")
                 trans_com = True
         else:
             trans_com = True
         if not os.path.exists(out_path + '/pool_sync_events/'+ pool['address'] + '.json'):
             if paired_with_stable:
                 get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', from_block_trans, eval_block_trans)
+                logging.info(f"Pool {pool['address']} sync events created")
                 sync_com = True
         else:
             sync_com = True
         
         if trans_com and sync_com:
             completed_pools.append(pool['address'])
+logging.info("Completed pools ------------------------------------------------")
 print('created pool events') #REACHED
 
 # #* Run get_contract_creation.py 
@@ -142,6 +149,7 @@ for token in tokens:
 decimals = pd.DataFrame(decimals_dict)
 decimals.to_csv(out_path + "/decimals.csv", index=False)
 
+logging.info("Decimals created ------------------------------------------------")
 print('created decimals_dict') #REACHED HERE
 
 #* run get_source_code.py
@@ -150,7 +158,7 @@ if not os.path.exists(out_path + "/source_code"):
 for token in tokens:
     if not os.path.exists(out_path + "/source_code/" + token + ".json"):
         get_source_code(token, out_path + "/source_code")
-    
+logging.info("Source code created ------------------------------------------------")
 print('created source_code')
 
 if not os.path.exists(out_path + "/Token_tx"):
@@ -160,6 +168,9 @@ if not os.path.exists(out_path + "/Token_tx"):
 for token_address in tokens:
     if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
         get_transfers(token_address, out_path + "/Token_tx", from_block_trans, eval_block_trans)
+        logging.info(f"Token_tx {token_address} created")
+
+logging.info("Token_tx created ------------------------------------------------")
 print('created token_tx') #REACHED HERE
 
 #* RAN IT UP TO HERE
@@ -171,9 +182,9 @@ print('created token_tx') #REACHED HERE
 
 subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--token", tokens[0], "--to_block", str(eval_block_trans)])
 # extract_transfer_heuristics.py
-
+logging.info("extract_pool_heuristics ran")
 subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", token[0], "--to_block", str(eval_block_trans)])
-
+logging.info("extract_transfer_heuristics ran")
 
 # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
 
