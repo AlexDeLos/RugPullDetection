@@ -28,10 +28,10 @@ out_path = "./temp_in_test"
 # from_block = 10008355
 # eval_block =13152303 #shared.BLOCKSTUDY
 from_block = 10008355
-eval_block = shared.BLOCKSTUDY
+eval_block = shared.BLOCKSTUDY + 1000000
 #! do the total number of transactions change anything? do I need to normalize the data?
-from_block_trans = shared.BLOCKSTUDY - 75000
-eval_block_trans = shared.BLOCKSTUDY
+from_block_trans = shared.BLOCKSTUDY 
+eval_block_trans = shared.BLOCKSTUDY + 1000000
 
 
 # This will take a while, get comfortable <3
@@ -81,6 +81,7 @@ if not os.path.exists(out_path + '/pool_sync_events'):
 
 # obtain_hash_event('Transfer(address,address,uint256)')
 completed_pools = []
+step_size = 75000
 for key, entry in pools_of_token.items():
     for pool in entry:
         trans_com = False
@@ -99,18 +100,37 @@ for key, entry in pools_of_token.items():
         if not os.path.exists(out_path + '/pool_transfer_events/'+ pool['address'] + '.json'):
             if paired_with_stable:
                 #obtain_hash_event('Transfer(address,address,uint256)')
-                get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
-                get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
-                get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
-                # get_pool_events(['Transfer','Burn','Mint'], None , pool['address'], out_path + '/pool_transfer_events', from_block_trans, eval_block_trans)
+                new_from_block = from_block_trans
+                new_eval_block = from_block_trans + step_size
+                while True:
+                    get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    new_from_block = new_eval_block
+                    new_eval_block += step_size
+                    if new_eval_block > eval_block_trans:
+                        new_eval_block = eval_block_trans
+                        get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        break
                 logging.info(f"Pool {pool['address']} transfer events created")
                 trans_com = True
         else:
             trans_com = True
         if not os.path.exists(out_path + '/pool_sync_events/'+ pool['address'] + '.json'):
             if paired_with_stable:
-                get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', from_block_trans, eval_block_trans)
-                logging.info(f"Pool {pool['address']} sync events created")
+                new_from_block = from_block_trans
+                new_eval_block = from_block_trans + step_size
+                while True:
+                    get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                    new_from_block = new_eval_block
+                    new_eval_block += step_size
+                    if new_eval_block > eval_block_trans:
+                        new_eval_block = eval_block_trans
+                        get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                        break
+                    logging.info(f"Pool {pool['address']} sync events created")
                 sync_com = True
         else:
             sync_com = True
