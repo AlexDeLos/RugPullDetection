@@ -45,6 +45,7 @@ def get_rpc_response(method, list_params=[]):
     old_log = logs.copy()
     results = [ [] for _ in range(len(logs)) ]
     to_pop = []
+    count = 0
     for j, log in enumerate(old_log):
         if list(log.keys())[-1] == "error":
             logging.warning(f"Error in log {j}: {log['error']}")
@@ -146,7 +147,6 @@ def clean_logs(contract, myevent, log):
         # suppress user warnings here
         args_event = eval(eval_string)
         args_event = args_event[0]
-        t = ''
     except IndexError as e:
         args_event = None
     return args_event
