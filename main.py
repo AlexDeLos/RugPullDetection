@@ -13,9 +13,12 @@ import xgboost as xgb
 import subprocess
 import json
 import os
+import logging
 # this file is to test a single token
 import shared
 shared.init()
+
+logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s")
 
 out_path = "./temp_in_test"
 
