@@ -27,10 +27,10 @@ out_path = "./temp_in_test"
 
 # from_block = 10008355
 # eval_block =13152303 #shared.BLOCKSTUDY
-from_block = 4719568
+from_block = 10008355
 eval_block = shared.BLOCKSTUDY
 #! do the total number of transactions change anything? do I need to normalize the data?
-from_block_trans = 8928158
+from_block_trans = 10008355
 eval_block_trans = shared.BLOCKSTUDY
 
 
