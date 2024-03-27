@@ -34,9 +34,9 @@ def get_rpc_response(method, list_params=[]):
                     'fromBlock': '0xa7d8c0', 'toBlock': '0xa83da0',
                     'topics': ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef']}]]
     """
-    ulr_index = 0
+    url_index = shared.INFURA_URL_INDEX
     urls = shared.INFURA_URLS
-    url = urls[ulr_index]
+    url = urls[url_index]
     list_params = list_params or []
     data = [{"jsonrpc": "2.0", "method": method, "params": params, "id": 1} for params in list_params]
     headers = {"Content-Type": "application/json"}
@@ -78,11 +78,12 @@ def get_rpc_response(method, list_params=[]):
                     logging.warning("change infura url to another one, this one is not working anymore wait 24h?")
 
                     warnings.warn("change infura url to another one, this one is not working anymore wait 24h?")
-                    url_index= ulr_index + 1
+                    url_index= url_index + 1
                     url_index = url_index % len(urls)
+                    shared.INFURA_URL_INDEX = url_index
                     count = count + 1
                     if count < len(urls) +1:
-                        return get_rpc_response(method, list_params)
+                        return get_rpc_response(method, list_params, url_index)
                     else:
                         logging.error("No URLS available")
                         raise Exception("No URLS available")
