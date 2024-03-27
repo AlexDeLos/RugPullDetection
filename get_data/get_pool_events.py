@@ -39,7 +39,7 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
 
     json_events = events_to_json(events)
     print(f"Saving {pool_address}.json")
-    print(f"Events: {json_events}")
+    print(f"Events {events_name}: {json_events}")
     if json_events != []:
         t = ''
     try:
