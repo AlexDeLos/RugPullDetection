@@ -39,7 +39,7 @@ print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
-# get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
 # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
@@ -47,24 +47,25 @@ logging.info("get_token_and_pools ran")
 print('created tokens and pools')
 
 # token = '0x9359CbaF496816a632A31C6D03f038f31Be6D3cf' #! no pools found for this
-# token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce'.lower() # -> shivainu token also gives error
+# token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce' # -> shivainu token also gives error
 # token = '0xdac17f958d2ee523a2206206994597c13d831ec7' # -> USDT, very active tokens take a LONG time
-# token = '0x6B0FaCA7bA905a86F221CEb5CA404f605e5b3131'.lower() # -> DEFI token
-# token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768'.lower() # -> Jet coin token (healthy token)
-#! token ='0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0'.lower() # -> Polygon MATIC token
-token = '0x6b175474e89094c44da98b954eedeac495271d0f'.lower() # -> DAI token  _> was 1
+# token = '0x6B0FaCA7bA905a86F221CEb5CA404f605e5b3131' # -> DEFI token
+# token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768' # -> Jet coin token (healthy token)
+#! token ='0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0' # -> Polygon MATIC token
+token = '0x6b175474e89094c44da98b954eedeac495271d0f' # -> DAI token  _> was 1
+token = shared.web3.to_checksum_address(token)
 health_tokens = pd.read_csv('./healthy_tokens.csv')
 # tokens to test 21/03./2024
-# token = '0x42fd79daf2a847b59d487650c68c2d7e52d752f6'.lower() # -> xTrax high risk
+# token = '0x42fd79daf2a847b59d487650c68c2d7e52d752f6' # -> xTrax high risk
 
-#! token = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'.lower()
+#! token = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'
 
 #! full scam 0x7ef1081ecc8b5b5b130656a41d4ce4f89dbbcc8c -> CP3RToken
 # created on 11213887
 
 #* Good tokens
-# token = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'.lower() # -> USDC token
-# token = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'.lower() # -> WETH token
+# token = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' # -> USDC token
+# token = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' # -> WETH token
  
 with open(out_path + '/pools_of_token.json', 'r') as f:
     pools_of_token= json.loads(f.read())
@@ -90,11 +91,11 @@ for key, entry in pools_of_token.items():
         
         if (pool['token0'] in tokens or pool['token1'] in tokens):
             # print(pool['token0'], pool['token1'])
-            if any(s.lower() in tokens for s in health_tokens['token_address'].values):
+            if any(s in tokens for s in health_tokens['token_address'].values):
                 # if the token is in the health tokens then both need to be in the list
-                paired_with_stable = (any(s.lower() == pool['token0'] for s in health_tokens['token_address'].values) and any(s.lower() == pool['token1'] for s in health_tokens['token_address'].values))
+                paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) and any(s == pool['token1'] for s in health_tokens['token_address'].values))
             else:
-                paired_with_stable = (any(s.lower() == pool['token0'] for s in health_tokens['token_address'].values) or any(s.lower() == pool['token1'] for s in health_tokens['token_address'].values))
+                paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
         else:
             paired_with_stable = False
 
@@ -259,11 +260,11 @@ difference_token_pool = lp_transfers['block_number'].iloc[0] - transfers['block_
 # liquidity
 features = pool_features.loc[token]
 pool_address = features['pool_address']
-WETH_pools = pools_of_token[shared.WETH.lower()]
+WETH_pools = pools_of_token[shared.WETH]
 
 WETH_pool_address = {pool_info['address']: pool_info for pool_info in WETH_pools}  # Set pool address as key
 pool_info = WETH_pool_address[pool_address]
-WETH_position = 1 if shared.WETH.lower() == pool_info['token1'] else 0
+WETH_position = 1 if shared.WETH == pool_info['token1'] else 0
 with open(out_path+f'/pool_sync_events/{pool_address}.json', 'r') as f:
     syncs = json.loads(f.read())
     

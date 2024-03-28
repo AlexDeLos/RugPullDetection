@@ -23,15 +23,15 @@ def get_token_and_pools(out_path, dex='uniswap_v2', from_block = shared.BLOCKSTU
 
     factory = shared.web3.eth.contract(shared.UNISWAP_FACTORY, abi=shared.ABI_FACTORY)
     pool_dic, tokens = get_pools(dex, factory, from_block, to_block)
-    tokens = dict((k.lower(), v) for k,v in tokens.items())
+    tokens = dict((k, v) for k,v in tokens.items())
     pd.DataFrame(tokens.keys(), columns=["token_address"]).to_csv(f"{out_path}/tokens.csv", index=False)
 
-    pool_dic = dict((k.lower(), v) for k,v in pool_dic.items())
+    pool_dic = dict((k, v) for k,v in pool_dic.items())
 
     for pool in pool_dic.keys():
-        pool_dic[pool]['token0'] = pool_dic[pool]['token0'].lower()
-        pool_dic[pool]['token1'] = pool_dic[pool]['token1'].lower()
-        pool_dic[pool]['address'] = pool_dic[pool]['address'].lower()
+        pool_dic[pool]['token0'] = pool_dic[pool]['token0']
+        pool_dic[pool]['token1'] = pool_dic[pool]['token1']
+        pool_dic[pool]['address'] = pool_dic[pool]['address']
     with open(f"{out_path}/pool_dict.json", "w") as outfile:
         json.dump(pool_dic, outfile)
 
