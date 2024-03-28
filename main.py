@@ -18,7 +18,7 @@ import logging
 import shared
 shared.init()
 
-logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s")#, level=logging.DEBUG)
+logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
 
 out_path = "./temp_in_test"
 
