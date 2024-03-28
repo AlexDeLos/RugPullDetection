@@ -86,6 +86,7 @@ for key, entry in pools_of_token.items():
     for pool in entry:
         trans_com = False
         sync_com = False
+        pool_address = shared.web3.to_checksum_address(pool['address'])
         
         if (pool['token0'] in tokens or pool['token1'] in tokens):
             # print(pool['token0'], pool['token1'])
@@ -97,13 +98,13 @@ for key, entry in pools_of_token.items():
         else:
             paired_with_stable = False
 
-        if not os.path.exists(out_path + '/pool_transfer_events/'+ pool['address'] + '.json'):
+        if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json'):
             if paired_with_stable:
                 #obtain_hash_event('Transfer(address,address,uint256)')
                 new_from_block = from_block_trans
                 new_eval_block = from_block_trans + step_size
                 while True:
-                    get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
 
                     # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token1'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                     # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token0'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
@@ -113,33 +114,33 @@ for key, entry in pools_of_token.items():
                     new_eval_block += step_size
                     if new_eval_block > eval_block_trans:
                         new_eval_block = eval_block_trans
-                        get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                         # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                         # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                         break
-                logging.info(f"Pool {pool['address']} transfer events created")
+                logging.info(f"Pool {pool_address} transfer events created")
                 trans_com = True
         else:
             trans_com = True
-        if not os.path.exists(out_path + '/pool_sync_events/'+ pool['address'] + '.json'):
+        if not os.path.exists(out_path + '/pool_sync_events/'+ pool_address + '.json'):
             if paired_with_stable:
                 new_from_block = from_block_trans
                 new_eval_block = from_block_trans + step_size
                 while True:
-                    get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                    get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
                     new_from_block = new_eval_block
                     new_eval_block += step_size
                     if new_eval_block > eval_block_trans:
                         new_eval_block = eval_block_trans
-                        get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool['address'], out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                        get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
                         break
-                    logging.info(f"Pool {pool['address']} sync events created")
+                    logging.info(f"Pool {pool_address} sync events created")
                 sync_com = True
         else:
             sync_com = True
         
         if trans_com and sync_com:
-            completed_pools.append(pool['address'])
+            completed_pools.append(pool_address)
 logging.info("Completed pools ------------------------------------------------")
 print('created pool events') #REACHED
 
