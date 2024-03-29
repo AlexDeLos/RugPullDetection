@@ -39,7 +39,7 @@ print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
-get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+# get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
 # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
@@ -203,9 +203,13 @@ print('created token_tx') #REACHED HERE
 #extract_pool_heuristics.py
 
 # python ML/Labelling/extract_pool_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
+print("Running extract_pool_heuristics, on token: ", token)
+logging.info("Running extract_pool_heuristics, on token: ", token)
 subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--token", tokens[0], "--to_block", str(eval_block_trans)])
 # extract_transfer_heuristics.py
 logging.info("extract_pool_heuristics ran")
+print("Running extract_transfer_heuristics, on token: ", token)
+logging.info("Running extract_transfer_heuristics, on token: ", token)
 # python ML/Labelling/extract_transfer_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
 subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", token[0], "--to_block", str(eval_block_trans)])
 logging.info("extract_transfer_heuristics ran")
