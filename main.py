@@ -202,6 +202,7 @@ for token_address in tokens:
             if new_eval_block > eval_block_trans:
                 new_eval_block = eval_block_trans
                 get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
+                print(f"Token_tx {token_address} created and finished")
                 break
             print(f"Token_tx {token_address} created")
             logging.info(f"Token_tx {token_address} created")
