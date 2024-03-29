@@ -189,6 +189,7 @@ print('created source_code')
 if not os.path.exists(out_path + "/Token_tx"):
     os.makedirs(out_path + "/Token_tx")
 
+step_size = 7500
 #* run get_transfers.py
 for token_address in tokens:
     if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
