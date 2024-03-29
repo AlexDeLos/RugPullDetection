@@ -140,7 +140,7 @@ def clean_logs(contract, myevent, log):
     args_event: AttributeDict
         Decoded logs.
     """
-    logging.info(f"Cleaning logs for event {myevent} on contract {contract.address}")
+    logging.debug(f"Cleaning logs for event {myevent} on contract {contract.address}")
     log_dict = AttributeDict({'logs': log})
     ret = []
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
@@ -197,7 +197,7 @@ def get_logs(contract, myevent, hash_create, from_block, to_block, number_batche
                         ]
 
     logs = get_rpc_response("eth_getLogs", list_params)
-    logging.info(f"From block: {from_block}, to block: {to_block}, number of logs: {len(logs)}")
+    logging.debug(f"From block: {from_block}, to block: {to_block}, number of logs: {len(logs)}")
     for j, log in enumerate(logs):
         if list(log.keys())[-1] == "result":
             for event in log['result']:

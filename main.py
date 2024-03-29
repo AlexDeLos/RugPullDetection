@@ -53,6 +53,9 @@ print('created tokens and pools')
 # token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768' # -> Jet coin token (healthy token)
 #! token ='0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0' # -> Polygon MATIC token
 token = '0x6b175474e89094c44da98b954eedeac495271d0f' # -> DAI token  _> was 1
+
+# token = "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8" # -> AGEUR token should be safe?
+
 token = shared.web3.to_checksum_address(token)
 health_tokens = pd.read_csv('./healthy_tokens.csv')
 # tokens to test 21/03./2024
@@ -189,8 +192,17 @@ if not os.path.exists(out_path + "/Token_tx"):
 #* run get_transfers.py
 for token_address in tokens:
     if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
-        get_transfers(token_address, out_path + "/Token_tx", from_block_trans, eval_block_trans)
-        logging.info(f"Token_tx {token_address} created")
+        new_from_block = from_block_trans
+        new_eval_block = from_block_trans + step_size
+        while True:
+            get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
+            new_from_block = new_eval_block
+            new_eval_block += step_size
+            if new_eval_block > eval_block_trans:
+                new_eval_block = eval_block_trans
+                get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
+                break
+            logging.info(f"Token_tx {token_address} created")
 
 logging.info("Token_tx created ------------------------------------------------")
 print('created token_tx') #REACHED HERE
