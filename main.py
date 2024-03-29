@@ -234,6 +234,7 @@ tx_curve = curve_dict['tx_curve']
 # liq_curve
 features = pool_features.loc[token]
 pool_address = features['pool_address']
+print("pool_address: ")
 print(pool_address)
 # pool_addresses = []
 # lp_transfers_json = []
