@@ -26,7 +26,6 @@ to_block = args.to_block
 
 tokens = pd.read_csv(data_path + "/tokens.csv")
 if token_list is not None:
-    print("tokens: ", tokens)
     tokens = tokens[tokens['token_address'] == token_list]
 print(token_list)
 print("Extracting transfer heuristics for ", len(tokens), " tokens.")
@@ -38,7 +37,6 @@ for token in tokens['token_address']:
         transfers = pd.read_csv(data_path + "/Token_tx/" + token + ".csv")
         # check if there are any transfers in the last month
         # MIDDLE SSHOULD BE LIKE: 19097239
-        print(transfers)
         last_transfer = transfers['block_number'].max()
         if last_transfer < to_block - shared.BLOCKS_TO_BE_INACTIVE:
             active_transfer_dict["inactive_transfers"].append(1)
