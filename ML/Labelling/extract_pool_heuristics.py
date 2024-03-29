@@ -113,10 +113,11 @@ for pool in tqdm(WETH_pools):
         pass
 
 df = pd.DataFrame(token_features).transpose()
+df.index = df['token_address']
 try:
-    df_old = pd.read_csv(data_path+"/pool_heuristics.csv")
+    df_old = pd.read_csv(data_path+"/pool_heuristics.csv", index_col="token_address")
     print("df_old: ", df_old)
-    if df_old.index.isin(df.index).any():
+    if df_old.row.isin(df.index).any():
         print('they have indices in common')
         df_old = df_old[~df_old.index.isin(df.index)]
     print("df_old: ", df_old)

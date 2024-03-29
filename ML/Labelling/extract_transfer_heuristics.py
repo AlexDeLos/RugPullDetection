@@ -46,10 +46,10 @@ for token in tokens['token_address']:
         active_transfer_dict["inactive_transfers"].append(1)
         print("No transfer data for token: ", token)
 
-df = pd.DataFrame(active_transfer_dict)
+df = pd.DataFrame(active_transfer_dict, index=active_transfer_dict["token_address"])
 print(active_transfer_dict)
 try:
-    df_old = pd.read_csv(data_path+"/transfer_heuristics.csv")
+    df_old = pd.read_csv(data_path+"/transfer_heuristics.csv", index_col="token_address")
     print("df_old: ", df_old)
     if df_old.index.isin(df.index).any():
         print('they have indices in common')
