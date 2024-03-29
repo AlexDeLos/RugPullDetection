@@ -205,13 +205,15 @@ print('created token_tx') #REACHED HERE
 # python ML/Labelling/extract_pool_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
 print("Running extract_pool_heuristics, on token: ", token)
 logging.info(f"Running extract_pool_heuristics, on token: {token}")
-subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--token", str(tokens[0]), "--to_block", str(eval_block_trans)])
+if not os.path.exists(out_path + "/pool_heuristics.csv"):
+    subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--token", str(tokens[0]), "--to_block", str(eval_block_trans)])
 # extract_transfer_heuristics.py
 logging.info("extract_pool_heuristics ran")
 print("Running extract_transfer_heuristics, on token: ", token)
 logging.info(f"Running extract_transfer_heuristics, on token: {token}")
 # python ML/Labelling/extract_transfer_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
-subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", str(tokens[0]), "--to_block", str(eval_block_trans)])
+if not os.path.exists(out_path + "/pool_heuristics.csv"):
+    subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", str(tokens[0]), "--to_block", str(eval_block_trans)])
 logging.info("extract_transfer_heuristics ran")
 
 # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
