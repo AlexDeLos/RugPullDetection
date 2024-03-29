@@ -50,6 +50,8 @@ df = pd.DataFrame(active_transfer_dict)
 print(active_transfer_dict)
 try:
     df_old = pd.read_csv(data_path+"/transfer_heuristics.csv")
+    if df_old.index.isin(df.index).any():
+        df_old = df_old[~df_old.index.isin(df.index)]
     df = pd.concat([df_old, df], ignore_index=True)
 except FileNotFoundError:
     pass
