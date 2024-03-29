@@ -52,6 +52,7 @@ try:
     df_old = pd.read_csv(data_path+"/transfer_heuristics.csv")
     print("df_old: ", df_old)
     if df_old.index.isin(df.index).any():
+        print('they have indices in common')
         df_old = df_old[~df_old.index.isin(df.index)]
     print("df_old: ", df_old)
     print("df: ", df)
