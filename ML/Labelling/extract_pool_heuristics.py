@@ -115,8 +115,11 @@ for pool in tqdm(WETH_pools):
 df = pd.DataFrame(token_features).transpose()
 try:
     df_old = pd.read_csv(data_path+"/pool_heuristics.csv")
+    print("df_old: ", df_old)
     if df_old.index.isin(df.index).any():
         df_old = df_old[~df_old.index.isin(df.index)]
+    print("df_old: ", df_old)
+    print("df: ", df)
     df = pd.concat([df_old, df])
 except:
     pass
