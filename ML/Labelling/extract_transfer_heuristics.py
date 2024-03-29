@@ -27,7 +27,7 @@ to_block = args.to_block
 tokens = pd.read_csv(data_path + "/tokens.csv")
 if token_list is not None:
     tokens = tokens[tokens['token_address'] == token_list]
-
+print(token_list)
 print("Extracting transfer heuristics for ", len(tokens), " tokens.")
 active_transfer_dict = {"token_address": [], "inactive_transfers": []}
 
