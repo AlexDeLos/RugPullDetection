@@ -1,6 +1,7 @@
 
 import pandas as pd
 from web3 import Web3
+import os
 
 from Utils.abi_info import obtain_hash_event
 from Utils.api import get_logs
@@ -38,7 +39,11 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     # Save txs in a Dataframe.
     txs = [[transaction['transactionHash'].hex(), transaction["blockNumber"], transaction["args"]['from'],
             transaction["args"]['to'], transaction["args"]['value'] / 10 ** decimal] for transaction in transfers]
-    transfers = pd.DataFrame(txs, columns=["transactionHash", "block_number", "from", "to", "value"])
+    transfers = pd.DataFrame(txs, columns=["transactionHash", "block_number", "from", "to", "value"], index= 'transactionHash')
+    if os.path.exists(out_path + "/" + token_address + ".csv"):
+        transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv")
+        transfers = pd.concat([transfers_old, transfers], ignore_index=True)
+
     transfers.to_csv(out_path + "/" + token_address + ".csv", index=False)
     return
 
