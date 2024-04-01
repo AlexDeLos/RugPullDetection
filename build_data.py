@@ -20,7 +20,7 @@ shared.init()
 
 logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
 
-out_path = "./temp_in_test"
+out_path = "./data_cluster"
 
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
 #these are block from Jet coin token
