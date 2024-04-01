@@ -190,6 +190,7 @@ if not os.path.exists(out_path + "/Token_tx"):
     os.makedirs(out_path + "/Token_tx")
 
 step_size = 500
+count = 0
 #* run get_transfers.py
 for token_address in tokens:
     if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
@@ -204,7 +205,8 @@ for token_address in tokens:
                 get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
                 print(f"Token_tx {token_address} created and finished")
                 break
-            print(f"Token_tx {token_address} created")
+            print(f"Token_tx {token_address} created {str(count)}")
+            count += 1
             logging.info(f"Token_tx {token_address} created")
 
 logging.info("Token_tx created ------------------------------------------------")
