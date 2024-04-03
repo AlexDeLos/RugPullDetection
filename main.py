@@ -38,7 +38,7 @@ if platform.system() == "Windows":
 elif platform.system() == "Linux":
     # Code for Linux
     print("Running on Linux")
-    # import resource
+    import resource
     memory_limit = (1 * 1024 * 1024 * 1024) * 2  # 0,75GB
 
     # Set the memory limit
