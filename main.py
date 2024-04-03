@@ -18,7 +18,20 @@ import logging
 # this file is to test a single token
 import shared
 import platform
+import argparse
 shared.init()
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--data_path", type=str, default="./temp_in_test", help="Path to data directory")
+parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
+# parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="Block to study")
+args = parser.parse_args()
+
+out_path = args.data_path
+get_pools_and_tokens = args.pools
+
+
 if platform.system() == "Windows":
     # Code for Windows
     print("Running on Windows")
@@ -38,10 +51,6 @@ else:
 logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
 # Set the memory limit in bytes
 
-
-# Rest of your code...
-out_path = "./temp_in_test"
-
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
 #these are block from Jet coin token
 
@@ -59,8 +68,9 @@ print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
-get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
-# get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
+if get_pools_and_tokens:
+    get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+    # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
 logging.info("get_token_and_pools ran")
