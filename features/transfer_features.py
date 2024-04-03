@@ -21,24 +21,35 @@ def get_transfer_features(transfers):
     features: Dict[str, float]
         Dictionary that contains all computed features.
     """
+    print("transfers = pd.DataFrame(transfers)")
     transfers = pd.DataFrame(transfers)
+    print("from_, to_, values = 2, 3, 4")
     from_, to_, values = 2, 3, 4
+    print("num_transactions_list = len(transfers)")
     num_transactions_list = len(transfers)
+    print("n_unique_addresses = len(set(transfers[from_].tolist() + transfers[to_].tolist()))")
     n_unique_addresses = len(set(transfers[from_].tolist() + transfers[to_].tolist()))
+    print("G = nx.Graph()")
     G = nx.Graph()
+    print("transfers = transfers.iloc[:10000]")
     transfers = transfers.iloc[:10000]
+    print("for From, To, Value in zip(transfers[from_], transfers[to_], transfers[values]):")
     for From, To, Value in zip(transfers[from_], transfers[to_], transfers[values]):
+       print("G.add_edge(From, To, weight=Value)")
        G.add_edge(From, To, weight=Value)
     try:
+        print("cluster_coeffs = nx.average_clustering(G)")
         cluster_coeffs = nx.average_clustering(G)
     except:
+        print("cluster_coeffs = 0")
         cluster_coeffs = 0
-
+    print("features = {")
     features = {
         'num_transactions': num_transactions_list,
         'n_unique_addresses': n_unique_addresses,
         'cluster_coeff': cluster_coeffs
     }
+    print("return features")
     return features
 
 
