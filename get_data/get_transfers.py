@@ -44,13 +44,13 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     # now we set the transactionHash as the index
     transfers.set_index("transactionHash", inplace=True)
     if os.path.exists(out_path + "/" + token_address + ".csv"):
-        transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv")
+        transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", index_col=0)
         if transfers_old.index.isin(transfers.index).any():
             print('they have indices in common')
             transfers_old = transfers_old[~transfers_old.index.isin(transfers.index)]
-        transfers = pd.concat([transfers_old, transfers])
+        transfers_test = pd.concat([transfers_old, transfers])
 
-    transfers.to_csv(out_path + "/" + token_address + ".csv", index=False)
+    transfers.to_csv(out_path + "/" + token_address + ".csv", index=True)
     return
 
 
