@@ -27,8 +27,13 @@ def get_transfer_features(transfers):
     n_unique_addresses = transfers[['from', 'to']].stack().nunique()
     G = nx.Graph()
     #? Que passa si no fem això? com funciona amb més de 10000?
-    # transfers = transfers.iloc[:10000]
+    transfers = transfers.iloc[:10000]
+    print('starting to add edges')
+    count = 0
+    max = len(transfers['from'])
     for From, To, Value in zip(transfers['from'], transfers['to'], transfers['value']):
+       print(f'Adding edge{count}/{max}')
+       count += 1
        G.add_edge(From, To, weight=Value)
     try:
         cluster_coeffs = nx.average_clustering(G)
