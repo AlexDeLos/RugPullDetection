@@ -219,7 +219,7 @@ print('created source_code')
 if not os.path.exists(out_path + "/Token_tx"):
     os.makedirs(out_path + "/Token_tx")
 
-step_size = 500
+step_size = 5000
 count = 0
 #* run get_transfers.py
 
