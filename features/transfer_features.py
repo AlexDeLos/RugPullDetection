@@ -23,14 +23,12 @@ def get_transfer_features(transfers):
     """
     if not isinstance(transfers, pd.DataFrame):
         transfers = pd.DataFrame(transfers)
-    from_, to_, values = 2, 3, 4
     num_transactions_list = len(transfers)
-    n_unique_addresses = len(set(transfers[from_].tolist() + transfers[to_].tolist()))
-    print("G = nx.Graph()")
+    n_unique_addresses = transfers[['from', 'to']].stack().nunique()
     G = nx.Graph()
     #? Que passa si no fem això? com funciona amb més de 10000?
-    transfers = transfers.iloc[:10000]
-    for From, To, Value in zip(transfers[from_], transfers[to_], transfers[values]):
+    # transfers = transfers.iloc[:10000]
+    for From, To, Value in zip(transfers['from'], transfers['to'], transfers['value']):
        G.add_edge(From, To, weight=Value)
     try:
         cluster_coeffs = nx.average_clustering(G)
