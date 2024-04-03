@@ -59,7 +59,7 @@ print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
-# get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
 # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
@@ -137,7 +137,6 @@ for key, entry in pools_of_token.items():
                         new_eval_block = eval_block_trans
                         get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                         break
-                logging.info(f"Pool {pool_address} transfer events created")
                 trans_com = True
         else:
             trans_com = True
@@ -153,14 +152,16 @@ for key, entry in pools_of_token.items():
                         new_eval_block = eval_block_trans
                         get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
                         break
-                    logging.info(f"Pool {pool_address} sync events created")
                 sync_com = True
         else:
             sync_com = True
         
         if trans_com and sync_com:
             completed_pools.append(pool_address)
+        logging.info(f"Pool {pool_address} events created")
+        print(f"Pool {pool_address} events created")
     current += 1
+    
     print(f"Completed {current} out of {total} pools")
 logging.info("Completed pools ------------------------------------------------")
 print('created pool events') #REACHED

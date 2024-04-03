@@ -38,10 +38,10 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
         return
 
     json_events = events_to_json(events)
-    logging.info(f"Saving {pool_address}.json")
-    print(f"Saving {pool_address}.json")
-    logging.info(f"Events {events_name}: {json_events}")
-    print(f"Events {events_name}: {json_events}")
+    logging.debug(f"Saving {pool_address}.json")
+    # print(f"Saving {pool_address}.json")
+    logging.debug(f"Events {events_name}: {json_events}")
+    # print(f"Events {events_name}: {json_events}")
     try:
         with open(f'{out_path}/{pool_address}.json', 'r+') as f:
             old = json.load(f)
