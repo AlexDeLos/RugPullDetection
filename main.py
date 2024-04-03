@@ -287,18 +287,22 @@ logging.info("extract_transfer_heuristics ran")
 # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
 
 pool_features = pd.read_csv(out_path+"/pool_heuristics.csv", index_col="token_address")
+print("Got pool features")
 # for token in tokens:
 # token_address (GOT IT)
 # eval_block (Input)
 # num_transactions (using the get_transfer_features)
 transfers = pd.read_csv(out_path+f"/Token_tx/{token}.csv")
+print("Got transfers")
 #* Called in build_dataset.py like this: get_transfer_features(transfers.loc[transfers.block_number < eval_block].values)
 feature_dict = get_transfer_features(transfers.values)
+print("Got transfer features")
 # n_unique_addresses
 # cluster_coeff
 num_transactions, n_unique_addresses , cluster_coeff = feature_dict['num_transactions'], feature_dict['n_unique_addresses'], feature_dict['cluster_coeff']
 # tx_curve
 curve_dict = get_curve(transfers.values)
+print("Got curve")
 tx_curve = curve_dict['tx_curve']
 
 # liq_curve
@@ -321,6 +325,7 @@ with open(out_path+f'/pool_transfer_events/{pool_features.loc[token]["pool_addre
 lp_transfers.columns = list(transfers.columns) + ['type']
 # called like this on build_dataset: get_curve(lp_transfers.loc[lp_transfers.block_number < eval_block].values)['tx_curve']})
 liq_curve = get_curve(lp_transfers.values)
+print("Got liq curve")
 # Mint
 # Burn
 # Transfer
@@ -351,16 +356,20 @@ syncs.columns = ['blockNumber', 'reserve0', 'reserve1']
 decimals = pd.read_csv(out_path+"/decimals.csv", index_col="token_address")
 decimal = decimals.loc[token].iloc[0]
 pool_feature_dict = get_pool_features(syncs.loc[syncs.blockNumber < eval_block_trans], WETH_position, decimal)
+print("Got pool features")
 
 #'num_transactions', 'n_unique_addresses', 'cluster_coeff', 'tx_curve', 'liq_curve', 'Mint', 'Burn', 'Transfer', 'difference_token_pool', 'n_syncs', 'WETH', 'prices', 'liquidity'
 X_dict = {'num_transactions': num_transactions, 'n_unique_addresses': n_unique_addresses, 'cluster_coeff': cluster_coeff, 'tx_curve': tx_curve, 'liq_curve': liq_curve, 'Mint': mint, 'Burn': burn, 'Transfer': transfer, 'difference_token_pool': difference_token_pool, 'n_syncs': pool_feature_dict['n_syncs'], 'WETH': pool_feature_dict['WETH'], 'prices': pool_feature_dict['prices'], 'liquidity': pool_feature_dict['liquidity']} 
+print("Got X_dict")
 model = xgb.XGBClassifier()
 
 model.load_model('models/model_0.8918918918918919.json')
 
 X = pd.DataFrame.from_dict(X_dict)
+print("Got X")
 
 preds_scorings = model.predict_proba(X)
+print("Model predicted")
 
 preds = model.predict(X)
 
