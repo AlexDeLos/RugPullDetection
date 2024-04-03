@@ -295,9 +295,9 @@ print("Got pool features")
 transfers = pd.read_csv(out_path+f"/Token_tx/{token}.csv")
 print("Got transfers")
 #* Called in build_dataset.py like this: get_transfer_features(transfers.loc[transfers.block_number < eval_block].values)
-values = transfers.values
+# values = transfers.values #! this just kills it for some reason
 print("Got values")
-feature_dict = get_transfer_features(values)
+feature_dict = get_transfer_features(transfers)
 print("Got transfer features")
 # n_unique_addresses
 # cluster_coeff
