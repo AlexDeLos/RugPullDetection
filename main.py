@@ -124,6 +124,8 @@ for key, entry in pools_of_token.items():
     for pool in entry:
         trans_com = False
         sync_com = False
+        if pool['address'] in completed_pools:
+            continue
         pool_address = shared.web3.to_checksum_address(pool['address'])
         
         if (pool['token0'] in tokens or pool['token1'] in tokens):
@@ -136,42 +138,48 @@ for key, entry in pools_of_token.items():
         else:
             paired_with_stable = False
 
-        if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json'):
-            if paired_with_stable:
-                #obtain_hash_event('Transfer(address,address,uint256)')
-                new_from_block = from_block_trans
-                new_eval_block = from_block_trans + step_size
-                while True:
+        if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json') and paired_with_stable:
+
+            new_from_block = from_block_trans
+            new_eval_block = from_block_trans + step_size
+            while True:
+                get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                new_from_block = new_eval_block
+                new_eval_block += step_size
+                if new_eval_block > eval_block_trans:
+                    new_eval_block = eval_block_trans
                     get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-                    new_from_block = new_eval_block
-                    new_eval_block += step_size
-                    if new_eval_block > eval_block_trans:
-                        new_eval_block = eval_block_trans
-                        get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-                        break
-                trans_com = True
+                    break
+            trans_com = True
+            actually_transferred = True
         else:
             trans_com = True
-        if not os.path.exists(out_path + '/pool_sync_events/'+ pool_address + '.json'):
-            if paired_with_stable:
-                new_from_block = from_block_trans
-                new_eval_block = from_block_trans + step_size
-                while True:
+            actually_transferred = False
+        if not os.path.exists(out_path + '/pool_sync_events/'+ pool_address + '.json') and paired_with_stable:
+            new_from_block = from_block_trans
+            new_eval_block = from_block_trans + step_size
+            while True:
+                get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                new_from_block = new_eval_block
+                new_eval_block += step_size
+                if new_eval_block > eval_block_trans:
+                    new_eval_block = eval_block_trans
                     get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
-                    new_from_block = new_eval_block
-                    new_eval_block += step_size
-                    if new_eval_block > eval_block_trans:
-                        new_eval_block = eval_block_trans
-                        get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
-                        break
-                sync_com = True
+                    break
+            sync_com = True
+            actually_synced = True
         else:
             sync_com = True
+            actually_synced = False
         
         if trans_com and sync_com:
             completed_pools.append(pool_address)
-        logging.info(f"Pool {pool_address} events created")
-        print(f"Pool {pool_address} events created")
+        if actually_transferred and actually_synced:
+            logging.info(f"Pool {pool_address} events created")
+            print(f"Pool {pool_address} events created")
+        else:
+            logging.debug(f"Pool {pool_address} events skipped")
+            print(f"Pool {pool_address} events skipped")
     current += 1
     
     print(f"Completed {current} out of {total} pools")
