@@ -71,6 +71,8 @@ if not os.path.exists(out_path):
 if get_pools_and_tokens:
     get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
     # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
+else:
+    print("Not getting pools and tokens again")
 
 # get_token_and_pools(out_path, dex='sushiswap')
 logging.info("get_token_and_pools ran")
