@@ -39,10 +39,10 @@ elif platform.system() == "Linux":
     # Code for Linux
     print("Running on Linux")
     # import resource
-    # memory_limit = (1 * 1024 * 1024 * 1024) * 2  # 0,75GB
+    memory_limit = (1 * 1024 * 1024 * 1024) * 2  # 0,75GB
 
-    # # Set the memory limit
-    # resource.setrlimit(resource.RLIMIT_AS, (memory_limit, memory_limit))
+    # Set the memory limit
+    resource.setrlimit(resource.RLIMIT_AS, (memory_limit, memory_limit))
 else:
     # Code for other operating systems
     print(f"Running on an unsupported operating system: {platform.system()}")
@@ -295,7 +295,9 @@ print("Got pool features")
 transfers = pd.read_csv(out_path+f"/Token_tx/{token}.csv")
 print("Got transfers")
 #* Called in build_dataset.py like this: get_transfer_features(transfers.loc[transfers.block_number < eval_block].values)
-feature_dict = get_transfer_features(transfers.values)
+values = transfers.values
+print("Got values")
+feature_dict = get_transfer_features(values)
 print("Got transfer features")
 # n_unique_addresses
 # cluster_coeff
