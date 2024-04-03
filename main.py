@@ -175,11 +175,11 @@ for key, entry in pools_of_token.items():
         if trans_com and sync_com:
             completed_pools.append(pool_address)
         if actually_transferred and actually_synced:
-            logging.info(f"Pool {pool_address} events created")
-            print(f"Pool {pool_address} events created")
+            logging.info(f"Pool {pool_address} events created, {current}")
+            print(f"Pool {pool_address} events created, {current}")
         else:
-            logging.debug(f"Pool {pool_address} events skipped")
-            print(f"Pool {pool_address} events skipped")
+            logging.debug(f"Pool {pool_address} events skipped, {current}")
+            print(f"Pool {pool_address} events skipped, {current}")
     current += 1
     
     print(f"Completed {current} out of {total} pools")
