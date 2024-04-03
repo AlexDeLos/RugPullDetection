@@ -306,7 +306,7 @@ print("Got transfer features")
 # cluster_coeff
 num_transactions, n_unique_addresses , cluster_coeff = feature_dict['num_transactions'], feature_dict['n_unique_addresses'], feature_dict['cluster_coeff']
 # tx_curve
-curve_dict = get_curve(transfers.values)
+curve_dict = get_curve(transfers)
 print("Got curve")
 tx_curve = curve_dict['tx_curve']
 

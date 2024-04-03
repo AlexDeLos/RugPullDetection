@@ -72,14 +72,14 @@ def get_curve(transfers):
     total_supply, total_supply_ans = 0, 0
 
     for i in range(len(transfers)):
-        balances[transfers[i][from_]] -= float(transfers[i][values])
-        balances[transfers[i][to_]] += float(transfers[i][values])
-        if transfers[i][from_] == shared.ETH_ADDRESS:
-            total_supply += float(transfers[i][values])
+        balances[transfers[i]['from']] -= float(transfers[i]['values'])
+        balances[transfers[i]['to']] += float(transfers[i]['values'])
+        if transfers[i]['from'] == shared.ETH_ADDRESS:
+            total_supply += float(transfers[i]['values'])
             balances[transfers[i][from_]] = 0
-        if transfers[i][to_] == shared.ETH_ADDRESS:
-            total_supply -= float(transfers[i][values])
-            balances[transfers[i][to_]] = 0
+        if transfers[i]['to'] == shared.ETH_ADDRESS:
+            total_supply -= float(transfers[i]['values'])
+            balances[transfers[i]['to']] = 0
     if total_supply != 0:
         curve = distribution_metric(balances, total_supply)
     else:
