@@ -12,14 +12,34 @@ from features.pool_features import get_pool_features
 import xgboost as xgb
 import subprocess
 import json
+
 import os
 import logging
 # this file is to test a single token
 import shared
+import platform
 shared.init()
+if platform.system() == "Windows":
+    # Code for Windows
+    print("Running on Windows")
+elif platform.system() == "Linux":
+    # Code for Linux
+    print("Running on Linux")
+    import resource
+    memory_limit = (1 * 1024 * 1024 * 1024) * 0.75  # 0,75GB
+
+    # Set the memory limit
+    resource.setrlimit(resource.RLIMIT_AS, (memory_limit, memory_limit))
+else:
+    # Code for other operating systems
+    print(f"Running on an unsupported operating system: {platform.system()}")
+
 
 logging.basicConfig(filename="logs.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
+# Set the memory limit in bytes
 
+
+# Rest of your code...
 out_path = "./temp_in_test"
 
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
