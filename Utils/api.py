@@ -48,7 +48,7 @@ def get_rpc_response(method, list_params=[]):
     count = 0
     for j, log in enumerate(old_log):
         if list(log.keys())[-1] == "error":
-            logging.warning(f"Error in log {j}: {log['error']}")
+            logging.debug(f"Error in log {j}: {log['error']}")
             if log['error']['code'] == -32005:
                 if log['error']['message'].split('.')[0] == 'query returned more than 10000 results':
                     # drop the ' ', '[', and ',' characters
