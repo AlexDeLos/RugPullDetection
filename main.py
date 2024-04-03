@@ -235,6 +235,7 @@ for token_address in tokens:
         else:
             completed = False
     except:
+        new_from_block = from_block_trans
         completed = False
         
 
