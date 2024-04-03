@@ -39,7 +39,7 @@ print('starting')
 if not os.path.exists(out_path):
     os.makedirs(out_path)
 
-# get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
+get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
 # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
 
 # get_token_and_pools(out_path, dex='sushiswap')
@@ -86,78 +86,70 @@ if not os.path.exists(out_path + '/pool_sync_events'):
 # obtain_hash_event('Transfer(address,address,uint256)')
 completed_pools = []
 step_size = 75000
-# for key, entry in pools_of_token.items():
-#     for pool in entry:
-#         trans_com = False
-#         sync_com = False
-#         pool_address = shared.web3.to_checksum_address(pool['address'])
+for key, entry in pools_of_token.items():
+    for pool in entry:
+        trans_com = False
+        sync_com = False
+        pool_address = shared.web3.to_checksum_address(pool['address'])
         
-#         if (pool['token0'] in tokens or pool['token1'] in tokens):
-#             # print(pool['token0'], pool['token1'])
-#             if any(s in tokens for s in health_tokens['token_address'].values):
-#                 # if the token is in the health tokens then both need to be in the list
-#                 paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) and any(s == pool['token1'] for s in health_tokens['token_address'].values))
-#             else:
-#                 paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
-#         else:
-#             paired_with_stable = False
+        if (pool['token0'] in tokens or pool['token1'] in tokens):
+            # print(pool['token0'], pool['token1'])
+            if any(s in tokens for s in health_tokens['token_address'].values):
+                # if the token is in the health tokens then both need to be in the list
+                paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) and any(s == pool['token1'] for s in health_tokens['token_address'].values))
+            else:
+                paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
+        else:
+            paired_with_stable = False
 
-#         if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json'):
-#             if paired_with_stable:
-#                 #obtain_hash_event('Transfer(address,address,uint256)')
-#                 new_from_block = from_block_trans
-#                 new_eval_block = from_block_trans + step_size
-#                 while True:
-#                     get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+        if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json'):
+            if paired_with_stable:
+                #obtain_hash_event('Transfer(address,address,uint256)')
+                new_from_block = from_block_trans
+                new_eval_block = from_block_trans + step_size
+                while True:
+                    get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
 
-#                     # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token1'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-#                     # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token0'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token1'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token0'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
 
-#                     # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-#                     new_from_block = new_eval_block
-#                     new_eval_block += step_size
-#                     if new_eval_block > eval_block_trans:
-#                         new_eval_block = eval_block_trans
-#                         get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-#                         # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-#                         # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-#                         break
-#                 logging.info(f"Pool {pool_address} transfer events created")
-#                 trans_com = True
-#         else:
-#             trans_com = True
-#         if not os.path.exists(out_path + '/pool_sync_events/'+ pool_address + '.json'):
-#             if paired_with_stable:
-#                 new_from_block = from_block_trans
-#                 new_eval_block = from_block_trans + step_size
-#                 while True:
-#                     get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
-#                     new_from_block = new_eval_block
-#                     new_eval_block += step_size
-#                     if new_eval_block > eval_block_trans:
-#                         new_eval_block = eval_block_trans
-#                         get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
-#                         break
-#                     logging.info(f"Pool {pool_address} sync events created")
-#                 sync_com = True
-#         else:
-#             sync_com = True
+                    # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                    new_from_block = new_eval_block
+                    new_eval_block += step_size
+                    if new_eval_block > eval_block_trans:
+                        new_eval_block = eval_block_trans
+                        get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
+                        break
+                logging.info(f"Pool {pool_address} transfer events created")
+                trans_com = True
+        else:
+            trans_com = True
+        if not os.path.exists(out_path + '/pool_sync_events/'+ pool_address + '.json'):
+            if paired_with_stable:
+                new_from_block = from_block_trans
+                new_eval_block = from_block_trans + step_size
+                while True:
+                    get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                    new_from_block = new_eval_block
+                    new_eval_block += step_size
+                    if new_eval_block > eval_block_trans:
+                        new_eval_block = eval_block_trans
+                        get_pool_events('Sync', obtain_hash_event('Sync(uint112,uint112)') , pool_address, out_path + '/pool_sync_events', new_from_block, new_eval_block)
+                        break
+                    logging.info(f"Pool {pool_address} sync events created")
+                sync_com = True
+        else:
+            sync_com = True
         
-#         if trans_com and sync_com:
-#             completed_pools.append(pool_address)
+        if trans_com and sync_com:
+            completed_pools.append(pool_address)
 logging.info("Completed pools ------------------------------------------------")
 print('created pool events') #REACHED
 
 # #* Run get_contract_creation.py 
-
-# creation_dict = {"token_address": [], "creation_block": []}
-
-# for token in tokens:
-#     creation_dict["token_address"].append(token)
-#     creation_dict["creation_block"].append(get_contract_creation(token))
-# df = pd.DataFrame(creation_dict)
-# df.to_csv(out_path + "/creation.csv", index=False)
-# print('created creation_dict')# REACHED HERE
+# ! this is not needed
 
 #* run get_decimals.py
 

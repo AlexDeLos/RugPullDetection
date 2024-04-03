@@ -87,18 +87,11 @@ for key, entry in pools_of_token.items():
                 new_eval_block = from_block_trans + step_size
                 while True:
                     get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-
-                    # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token1'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-                    # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['token0'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-
-                    # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                     new_from_block = new_eval_block
                     new_eval_block += step_size
                     if new_eval_block > eval_block_trans:
                         new_eval_block = eval_block_trans
                         get_pool_events('Transfer', obtain_hash_event('Transfer(address,address,uint256)') , pool_address, out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-                        # get_pool_events('Burn', obtain_hash_event('Burn(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
-                        # get_pool_events('Mint', obtain_hash_event('Mint(address,uint256)') , pool['address'], out_path + '/pool_transfer_events', new_from_block, new_eval_block)
                         break
                 logging.info(f"Pool {pool_address} transfer events created")
                 trans_com = True
@@ -127,15 +120,7 @@ logging.info("Completed pools ------------------------------------------------")
 print('created pool events') #REACHED
 
 # #* Run get_contract_creation.py 
-
-# creation_dict = {"token_address": [], "creation_block": []}
-
-# for token in tokens:
-#     creation_dict["token_address"].append(token)
-#     creation_dict["creation_block"].append(get_contract_creation(token))
-# df = pd.DataFrame(creation_dict)
-# df.to_csv(out_path + "/creation.csv", index=False)
-# print('created creation_dict')# REACHED HERE
+# ! this is not needed
 
 #* run get_decimals.py
 
@@ -171,8 +156,24 @@ step_size = 500
 count = 0
 #* run get_transfers.py
 for token_address in tokens:
-    if not os.path.exists(out_path + "/Token_tx/" + token_address + ".csv"):
-        new_from_block = from_block_trans
+    try:
+        with open(out_path + "/Token_tx/" + token_address + ".csv", "r", encoding="utf-8", errors="ignore") as scraped:
+            final_line = scraped.readlines()[-1]
+            last_block = int(final_line.split(",")[1])
+        new_from_block = last_block
+        if new_from_block > eval_block_trans:
+            completed = True
+        else:
+            completed = False
+    except:
+        completed = False
+        
+
+    if not completed:
+        if new_from_block > from_block_trans - step_size:
+            pass
+        else:
+            new_from_block = from_block_trans
         new_eval_block = from_block_trans + step_size
         while True:
             get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
@@ -184,8 +185,8 @@ for token_address in tokens:
                 print(f"Token_tx {token_address} created and finished")
                 break
             print(f"Token_tx {token_address} created {str(count)}")
+            logging.info(f"Token_tx {token_address} created {str(count)}")
             count += 1
-            logging.info(f"Token_tx {token_address} created")
 
 logging.info("Token_tx created ------------------------------------------------")
 print('created token_tx') #REACHED HERE
