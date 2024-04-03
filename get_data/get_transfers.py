@@ -48,7 +48,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
         if transfers_old.index.isin(transfers.index).any():
             print('they have indices in common')
             transfers_old = transfers_old[~transfers_old.index.isin(transfers.index)]
-        transfers = pd.concat([transfers_old, transfers], ignore_index=True)
+        transfers = pd.concat([transfers_old, transfers])
 
     transfers.to_csv(out_path + "/" + token_address + ".csv", index=False)
     return
