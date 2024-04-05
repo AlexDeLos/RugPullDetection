@@ -42,8 +42,9 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     # Save txs in a Dataframe.
     txs = [[transaction['transactionHash'].hex(), transaction["blockNumber"], transaction["args"]['from'],
             transaction["args"]['to'], transaction["args"]['value'] / 10 ** decimal] for transaction in transfers]
-            
+    print("Creating the dataframe")
     transfers = pd.DataFrame(txs, columns=["transactionHash", "block_number", "from", "to", "value"])
+    print("Created the dataframe")
     # now we set the transactionHash as the index
     transfers.set_index("transactionHash", inplace=True)
     if os.path.exists(out_path + "/" + token_address + ".csv"):
