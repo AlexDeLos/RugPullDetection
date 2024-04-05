@@ -50,7 +50,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     print("Set the index")
     if os.path.exists(out_path + "/" + token_address + ".csv"):
         print("the file already exists")
-        transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", index_col=0)
+        transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", iterator=True, chunksize=1000, index_col=0)
         print("opened the old file")
         if transfers_old.index.isin(transfers.index).any():
             print('they have indices in common')
