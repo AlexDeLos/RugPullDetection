@@ -71,6 +71,7 @@ def get_curve(transfers):
     from_, to_, values = 2, 3, 4
     total_supply, total_supply_ans = 0, 0
 
+    # TODO: transfers[i] only works in list, that is inefficient. change it to .loc df
     for i in range(len(transfers)):
         balances[transfers[i]['from']] -= float(transfers[i]['values'])
         balances[transfers[i]['to']] += float(transfers[i]['values'])

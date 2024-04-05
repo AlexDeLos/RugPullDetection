@@ -378,5 +378,8 @@ print("Model predicted")
 
 preds = model.predict(X)
 
+logging.info("Model predicted ------------------------------------------------")
+logging.info(f"Model predicted: {preds}")
+logging.info(f"More precisely model predicted: {preds_scorings}")
 print("Model predicted: "+ str(preds)) #REACHED HERE
 print("More precisely model predicted: "+ str(preds_scorings)) #REACHED HERE
