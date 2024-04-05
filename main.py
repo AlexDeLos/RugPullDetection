@@ -329,7 +329,7 @@ with open(out_path+f'/pool_transfer_events/{pool_features.loc[token]["pool_addre
 
 lp_transfers.columns = list(transfers.columns) + ['type']
 # called like this on build_dataset: get_curve(lp_transfers.loc[lp_transfers.block_number < eval_block].values)['tx_curve']})
-liq_curve = get_curve(lp_transfers.values)
+liq_curve = get_curve(lp_transfers)
 print("Got liq curve")
 # Mint
 # Burn
