@@ -34,6 +34,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
         token_address = Web3.toChecksumAddress(token_address)
         contract = shared.web3.eth.contract(token_address, abi=shared.ABI)
         transfers = get_logs(contract, "Transfer", hash_log, start_block, end_block, number_batches=1)
+        print("Got the logs")
     except Exception as err:
         print(f"Exception occured: {err}, skipping {token_address}")
         return
