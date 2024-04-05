@@ -42,7 +42,7 @@ elif platform.system() == "Linux":
     # Code for Linux
     print("Running on Linux")
     import resource
-    memory_limit = (1 * 1024 * 1024 * 1024) * 2  # 0,75GB
+    memory_limit = (1 * 1024 * 1024 * 1024) * 1.5  # 0,75GB
 
     # Set the memory limit
     resource.setrlimit(resource.RLIMIT_AS, (memory_limit, memory_limit))
@@ -223,7 +223,7 @@ print('created source_code')
 if not os.path.exists(out_path + "/Token_tx"):
     os.makedirs(out_path + "/Token_tx")
 
-step_size = 2500
+step_size = 1000
 count = 0
 #* run get_transfers.py
 
