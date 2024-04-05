@@ -26,13 +26,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--data_path", type=str, default="./temp_in_test", help="Path to data directory")
 parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
 parser.add_argument("--token" , type=str, default=None, help="Token to study")
+parser.add_argument("-e", "--events", type=bool, default=False, help="run event gathering")
+parser.add_argument("-t", "--token_tx", type=bool, default=False, help="run token tx gathering")
 # parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="Block to study")
 args = parser.parse_args()
 
 out_path = args.data_path
 get_pools_and_tokens = args.pools
-run_events = True
-run_token_tx = True
+run_events = args.events
+run_token_tx = args.token_tx
 token = args.token
 
 if platform.system() == "Windows":
