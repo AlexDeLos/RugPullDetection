@@ -47,6 +47,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     print("Created the dataframe")
     # now we set the transactionHash as the index
     transfers.set_index("transactionHash", inplace=True)
+    print("Set the index")
     if os.path.exists(out_path + "/" + token_address + ".csv"):
         transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", index_col=0)
         print("opened the old file")
