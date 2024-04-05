@@ -49,12 +49,15 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     transfers.set_index("transactionHash", inplace=True)
     if os.path.exists(out_path + "/" + token_address + ".csv"):
         transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", index_col=0)
+        print("opened the old file")
         if transfers_old.index.isin(transfers.index).any():
             print('they have indices in common')
             transfers_old = transfers_old[~transfers_old.index.isin(transfers.index)]
         transfers = pd.concat([transfers_old, transfers])
+        print("concatenated the two dataframes")
 
     transfers.to_csv(out_path + "/" + token_address + ".csv", index=True)
+    print(f"Saved {len(transfers)} transfers for {token_address} in {out_path}/{token_address}.csv")
     return
 
 
