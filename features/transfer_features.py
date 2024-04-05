@@ -73,14 +73,14 @@ def get_curve(transfers):
 
     # TODO: transfers[i] only works in list, that is inefficient. change it to .loc df
     for i in range(len(transfers)):
-        balances[transfers[i]['from']] -= float(transfers[i]['values'])
-        balances[transfers[i]['to']] += float(transfers[i]['values'])
-        if transfers[i]['from'] == shared.ETH_ADDRESS:
-            total_supply += float(transfers[i]['values'])
-            balances[transfers[i][from_]] = 0
-        if transfers[i]['to'] == shared.ETH_ADDRESS:
-            total_supply -= float(transfers[i]['values'])
-            balances[transfers[i]['to']] = 0
+        balances[transfers.iloc[i]['from']] -= float(transfers.iloc[i]['values'])
+        balances[transfers.iloc[i]['to']] += float(transfers.iloc[i]['values'])
+        if transfers.iloc[i]['from'] == shared.ETH_ADDRESS:
+            total_supply += float(transfers.iloc[i]['values'])
+            balances[transfers.iloc[i][from_]] = 0
+        if transfers.iloc[i]['to'] == shared.ETH_ADDRESS:
+            total_supply -= float(transfers.iloc[i]['values'])
+            balances[transfers.iloc[i]['to']] = 0
     if total_supply != 0:
         curve = distribution_metric(balances, total_supply)
     else:
