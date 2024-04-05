@@ -25,13 +25,15 @@ shared.init()
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_path", type=str, default="./temp_in_test", help="Path to data directory")
 parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
+parser.add_argument("--token" , type=str, default=None, help="Token to study")
 # parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="Block to study")
 args = parser.parse_args()
 
 out_path = args.data_path
 get_pools_and_tokens = args.pools
-run_events = False
-run_token_tx = False
+run_events = True
+run_token_tx = True
+token = args.token
 
 if platform.system() == "Windows":
     # Code for Windows
@@ -85,7 +87,7 @@ print('created tokens and pools')
 # token = '0x6B0FaCA7bA905a86F221CEb5CA404f605e5b3131' # -> DEFI token
 # token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768' # -> Jet coin token (healthy token)
 #! token ='0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0' # -> Polygon MATIC token
-token = '0x6b175474e89094c44da98b954eedeac495271d0f' # -> DAI token  _> was 1
+# token = '0x6b175474e89094c44da98b954eedeac495271d0f' # -> DAI token  _> was 1 -> confirmed to be safe
 
 # token = "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8" # -> AGEUR token should be safe?
 
