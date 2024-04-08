@@ -34,7 +34,6 @@ active_transfer_dict = {"token_address": [], "inactive_transfers": []}
 for token in tokens['token_address']:
     active_transfer_dict["token_address"].append(token)
     try:
-        transfers = pd.read_csv(data_path + "/Token_tx/" + token + ".csv")
         transfers = pd.read_csv(data_path + "/" + token + ".csv", iterator=True, chunksize=1000, index_col=0)
         max_block = 0
         for transfer in transfers:
