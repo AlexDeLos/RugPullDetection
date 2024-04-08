@@ -25,6 +25,7 @@ def get_token_and_pools(out_path, dex='uniswap_v2', from_block = shared.BLOCKSTU
     pool_dic, tokens = get_pools(dex, factory, from_block, to_block)
     tokens = dict((k, v) for k,v in tokens.items())
     pd.DataFrame(tokens.keys(), columns=["token_address"]).to_csv(f"{out_path}/tokens.csv", index=False)
+    print('Tokens downloaded!')
 
     pool_dic = dict((k, v) for k,v in pool_dic.items())
 
@@ -34,6 +35,7 @@ def get_token_and_pools(out_path, dex='uniswap_v2', from_block = shared.BLOCKSTU
         pool_dic[pool]['address'] = pool_dic[pool]['address']
     with open(f"{out_path}/pool_dict.json", "w") as outfile:
         json.dump(pool_dic, outfile)
+    print('Pools downloaded!')
 
     inverted_pool_dict = dict()
     for pool in pool_dic.keys():
@@ -48,6 +50,7 @@ def get_token_and_pools(out_path, dex='uniswap_v2', from_block = shared.BLOCKSTU
 
     with open(f"{out_path}/pools_of_token.json", "w") as outfile:
         json.dump(inverted_pool_dict, outfile)
+    print('Pools of tokens downloaded!')
 
     print('Tokens and Pools downloaded!')
 
