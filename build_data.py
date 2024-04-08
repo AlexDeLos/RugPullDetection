@@ -133,16 +133,8 @@ if run_events:
             if pool['address'] in completed_pools:
                 continue
             pool_address = shared.web3.to_checksum_address(pool['address'])
-            
-            if (pool['token0'] in tokens or pool['token1'] in tokens):
-                # print(pool['token0'], pool['token1'])
-                if any(s in tokens for s in health_tokens['token_address'].values):
-                    # if the token is in the health tokens then both need to be in the list
-                    paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) and any(s == pool['token1'] for s in health_tokens['token_address'].values))
-                else:
-                    paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
-            else:
-                paired_with_stable = False
+
+            paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
 
             if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json') and paired_with_stable:
 
