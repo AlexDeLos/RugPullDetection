@@ -61,8 +61,6 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
                 print('they have indices in common')
                 transfer_new = transfers[~transfers.index.isin(transfer_old.index)]
                 transfers = transfer_new
-                # if c_overlap > 1:
-                #     print('more than one overlap', c_overlap)
                 
         # transfers = pd.concat([transfer_old, transfers])
         print("concatenated the two dataframes")
