@@ -48,17 +48,26 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     # now we set the transactionHash as the index
     transfers.set_index("transactionHash", inplace=True)
     print("Set the index")
+    m = 'w'
     if os.path.exists(out_path + "/" + token_address + ".csv"):
         print("the file already exists")
         transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", iterator=True, chunksize=1000, index_col=0)
+        m = 'a'
         print("opened the old file")
-        if transfers_old.index.isin(transfers.index).any():
-            print('they have indices in common')
-            transfers_old = transfers_old[~transfers_old.index.isin(transfers.index)]
-        transfers = pd.concat([transfers_old, transfers])
+        c_overlap = 0
+        for transfer_old in transfers_old:
+            if transfer_old.index.isin(transfers.index).any():
+                c_overlap += 1
+                print('they have indices in common')
+                transfer_new = transfers[~transfers.index.isin(transfer_old.index)]
+                transfers = transfer_new
+                if c_overlap > 1:
+                    raise ValueError("Overlaps more than once, check the code.")
+                
+        # transfers = pd.concat([transfer_old, transfers])
         print("concatenated the two dataframes")
 
-    transfers.to_csv(out_path + "/" + token_address + ".csv", index=True)
+    transfers.to_csv(out_path + "/" + token_address + ".csv", index=True, mode=m, header=m == 'w')
     print(f"Saved {len(transfers)} transfers for {token_address} in {out_path}/{token_address}.csv")
     return
 

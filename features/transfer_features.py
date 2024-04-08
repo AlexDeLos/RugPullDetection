@@ -80,6 +80,7 @@ def get_curve(transfers):
         if transfers.iloc[i]['to'] == shared.ETH_ADDRESS:
             total_supply -= float(transfers.iloc[i]['value'])
             balances[transfers.iloc[i]['to']] = 0
+        print(f'Processed {i}/{len(transfers)}')
     if total_supply != 0:
         curve = distribution_metric(balances, total_supply)
     else:
