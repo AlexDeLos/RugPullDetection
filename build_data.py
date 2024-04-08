@@ -23,7 +23,7 @@ shared.init()
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data_path", type=str, default="./temp_in_test", help="Path to data directory")
+parser.add_argument("--data_path", type=str, default="./data_run", help="Path to data directory")
 parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
 parser.add_argument("--token" , type=str, default=None, help="Token to study")
 parser.add_argument("-e", "--events", type=bool, default=False, help="run event gathering")
@@ -291,98 +291,4 @@ subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data
 logging.info("extract_transfer_heuristics ran")
 
 # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
-
-pool_features = pd.read_csv(out_path+"/pool_heuristics.csv", index_col="token_address")
-print("Got pool features")
-# for token in tokens:
-# token_address (GOT IT)
-# eval_block (Input)
-# num_transactions (using the get_transfer_features)
-transfers = pd.read_csv(out_path+f"/Token_tx/{token}.csv") #! this is too llsarge
-print("Got transfers")
-#* Called in build_dataset.py like this: get_transfer_features(transfers.loc[transfers.block_number < eval_block].values)
-# values = transfers.values #! this just kills it for some reason
-print("Got values")
-feature_dict = get_transfer_features(transfers)
-print("Got transfer features")
-# n_unique_addresses
-# cluster_coeff
-num_transactions, n_unique_addresses , cluster_coeff = feature_dict['num_transactions'], feature_dict['n_unique_addresses'], feature_dict['cluster_coeff']
-# tx_curve
-curve_dict = get_curve(transfers)
-print("Got curve")
-tx_curve = curve_dict['tx_curve']
-
-# liq_curve
-features = pool_features.loc[token]
-pool_address = features['pool_address']
-print("pool_address: ")
-print(pool_address)
-# pool_addresses = []
-# lp_transfers_json = []
-# for pool in pools_of_token[token]:
-#     pool_addresses.append(pool['address'])
-
-with open(out_path+f'/pool_transfer_events/{pool_features.loc[token]["pool_address"]}.json',
-            'r') as f:
-    lp_transfers_json = json.loads(f.read())
-    lp_transfers = pd.DataFrame([[info['transactionHash'], info['blockNumber']] + list(info['args'].values())
-                                    + [info['event']] # [info['type']] for info in lp_transfers])
-                                    for info in lp_transfers_json])
-
-lp_transfers.columns = list(transfers.columns) + ['type']
-# called like this on build_dataset: get_curve(lp_transfers.loc[lp_transfers.block_number < eval_block].values)['tx_curve']})
-liq_curve = get_curve(lp_transfers)
-print("Got liq curve")
-# Mint
-# Burn
-# Transfer
-# transfer_types = lp_transfers.loc[lp_transfers.block_number < eval_block]['type'].value_counts()
-transfer_types = lp_transfers['type'].value_counts()
-dic_of_trans = {'Mint': 0, 'Burn': 0, 'Transfer': 0}
-for type_ in transfer_types.index:
-    dic_of_trans[type_] = transfer_types[type_]
-mint, burn, transfer = dic_of_trans['Mint'], dic_of_trans['Burn'], dic_of_trans['Transfer']
-# difference_token_pool
-difference_token_pool = lp_transfers['block_number'].iloc[0] - transfers['block_number'].iloc[0]
-# n_syncs
-# WETH
-# prices
-# liquidity
-features = pool_features.loc[token]
-pool_address = features['pool_address']
-WETH_pools = pools_of_token[shared.WETH]
-
-WETH_pool_address = {pool_info['address']: pool_info for pool_info in WETH_pools}  # Set pool address as key
-pool_info = WETH_pool_address[pool_address]
-WETH_position = 1 if shared.WETH == pool_info['token1'] else 0
-with open(out_path+f'/pool_sync_events/{pool_address}.json', 'r') as f:
-    syncs = json.loads(f.read())
-    
-syncs = pd.DataFrame([[info['blockNumber']] + list(info['args'].values()) for info in syncs])
-syncs.columns = ['blockNumber', 'reserve0', 'reserve1']
-decimals = pd.read_csv(out_path+"/decimals.csv", index_col="token_address")
-decimal = decimals.loc[token].iloc[0]
-pool_feature_dict = get_pool_features(syncs.loc[syncs.blockNumber < eval_block_trans], WETH_position, decimal)
-print("Got pool features")
-
-#'num_transactions', 'n_unique_addresses', 'cluster_coeff', 'tx_curve', 'liq_curve', 'Mint', 'Burn', 'Transfer', 'difference_token_pool', 'n_syncs', 'WETH', 'prices', 'liquidity'
-X_dict = {'num_transactions': num_transactions, 'n_unique_addresses': n_unique_addresses, 'cluster_coeff': cluster_coeff, 'tx_curve': tx_curve, 'liq_curve': liq_curve, 'Mint': mint, 'Burn': burn, 'Transfer': transfer, 'difference_token_pool': difference_token_pool, 'n_syncs': pool_feature_dict['n_syncs'], 'WETH': pool_feature_dict['WETH'], 'prices': pool_feature_dict['prices'], 'liquidity': pool_feature_dict['liquidity']} 
-print("Got X_dict")
-model = xgb.XGBClassifier()
-
-model.load_model('models/model_0.8918918918918919.json')
-
-X = pd.DataFrame.from_dict(X_dict)
-print("Got X")
-
-preds_scorings = model.predict_proba(X)
-print("Model predicted")
-
-preds = model.predict(X)
-
-logging.info("Model predicted ------------------------------------------------")
-logging.info(f"Model predicted: {preds}")
-logging.info(f"More precisely model predicted: {preds_scorings}")
-print("Model predicted: "+ str(preds)) #REACHED HERE
-print("More precisely model predicted: "+ str(preds_scorings)) #REACHED HERE
+logging.info("build_dataset ran")
