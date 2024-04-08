@@ -65,7 +65,7 @@ from_block = 10008355
 eval_block = shared.BLOCKSTUDY + 1000000
 #! do the total number of transactions change anything? do I need to normalize the data?
 from_block_trans = shared.BLOCKSTUDY 
-eval_block_trans = shared.BLOCKSTUDY + 1000000
+eval_block_trans = shared.BLOCKSTUDY + 60000
 
 
 # This will take a while, get comfortable <3
@@ -306,7 +306,7 @@ print("Got pool features")
 # token_address (GOT IT)
 # eval_block (Input)
 # num_transactions (using the get_transfer_features)
-transfers = pd.read_csv(out_path+f"/Token_tx/{token}.csv")
+transfers = pd.read_csv(out_path+f"/Token_tx/{token}.csv") #! this is too llsarge
 print("Got transfers")
 #* Called in build_dataset.py like this: get_transfer_features(transfers.loc[transfers.block_number < eval_block].values)
 # values = transfers.values #! this just kills it for some reason
