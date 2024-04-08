@@ -236,14 +236,17 @@ if run_token_tx:
             with open(out_path + "/Token_tx/" + token_address + ".csv", "r", encoding="utf-8", errors="ignore") as scraped:
                 final_line = scraped.readlines()[-1]
                 last_block = int(final_line.split(",")[1])
+            print(f"Last block for {token_address} is {last_block}")
             new_from_block = last_block
             if new_from_block > eval_block_trans - step_size:
                 completed = True
+                print(f"Token_tx {token_address} created and finished")
             else:
                 completed = False
         except:
             new_from_block = from_block_trans
             completed = False
+            print("Problem getting last block")
             
 
         if not completed:
