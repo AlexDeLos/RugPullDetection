@@ -35,9 +35,15 @@ for token in tokens['token_address']:
     active_transfer_dict["token_address"].append(token)
     try:
         transfers = pd.read_csv(data_path + "/Token_tx/" + token + ".csv")
+        transfers = pd.read_csv(data_path + "/" + token + ".csv", iterator=True, chunksize=1000, index_col=0)
+        max_block = 0
+        for transfer in transfers:
+            cur_max = transfer['block_number'].max()
+            if cur_max > max_block:
+                max_block = cur_max
         # check if there are any transfers in the last month
         # MIDDLE SSHOULD BE LIKE: 19097239
-        last_transfer = transfers['block_number'].max()
+        last_transfer = transfer
         if last_transfer < to_block - shared.BLOCKS_TO_BE_INACTIVE:
             active_transfer_dict["inactive_transfers"].append(1)
         else:
