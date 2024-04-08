@@ -233,6 +233,7 @@ count = 0
 if run_token_tx:
     for token_address in tokens:
         try:
+            print(f"Getting last block for {token_address}")
             with open(out_path + "/Token_tx/" + token_address + ".csv", "r", encoding="utf-8", errors="ignore") as scraped:
                 final_line = scraped.readlines()[-1]
                 last_block = int(final_line.split(",")[1])
