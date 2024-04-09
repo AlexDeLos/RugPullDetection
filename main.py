@@ -83,8 +83,8 @@ else:
 logging.info("get_token_and_pools ran")
 print('created tokens and pools')
 
-# token = '0x9359CbaF496816a632A31C6D03f038f31Be6D3cf' #! no pools found for this
-# token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce' # -> shivainu token also gives error
+# token = '0x9359CbaF496816a632A31C6D03f038f31Be6D3cf' 
+# token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce' # -> shivainu -> gave 1
 # token = '0xdac17f958d2ee523a2206206994597c13d831ec7' # -> USDT, very active tokens take a LONG time
 # token = '0x6B0FaCA7bA905a86F221CEb5CA404f605e5b3131' # -> DEFI token
 # token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768' # -> Jet coin token (healthy token)
