@@ -5,6 +5,7 @@ from web3 import Web3
 def init():
 
     global INFURA_URL_INDEX
+    global URL_CHANGE_COUNT
     global INFURA_URLS
     global USE_POOL_INFURA
     global USE_WALLET_INFURA
@@ -42,6 +43,7 @@ def init():
 
     # # Get infura node url and logic booleans
     INFURA_URL_INDEX  = 0
+    URL_CHANGE_COUNT  = 0
     INFURA_URLS       = [config.get("NODE", "INFURA_URL_0"), config.get("NODE", "INFURA_URL_1")]
     USE_POOL_INFURA    = config.getboolean("NODE", "USE_POOL_INFURA")
     USE_WALLET_INFURA  = config.getboolean("NODE", "USE_WALLET_INFURA")

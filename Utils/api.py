@@ -11,7 +11,7 @@ import shared
 shared.init()
 
 
-def get_rpc_response(method, list_params=[], count = 0):
+def get_rpc_response(method, list_params=[]):
     """
     Parameters
     ----------
@@ -74,22 +74,23 @@ def get_rpc_response(method, list_params=[], count = 0):
                     time.sleep(30)
                     return get_rpc_response(method, list_params)
                 else:
-                    logging.warning(f"change infura url {url} to another one {urls[url_index + 1]}, this one is not working anymore wait 24h?")
+                    Warning_string = f"change infura url {url} to another one {urls[(url_index + 1)% len(urls)]}, this one is not working anymore wait 24h?"
+                    logging.warning(Warning_string)
 
-                    warnings.warn(f"change infura url {url} to another one {urls[url_index + 1]}, this one is not working anymore wait 24h?")
+                    warnings.warn(Warning_string)
                     url_index= url_index + 1
                     url_index = url_index % len(urls)
                     shared.INFURA_URL_INDEX = url_index
-                    count = count + 1
-                    if count < len(urls) +1:
-                        return get_rpc_response(method, list_params, count)
+                    shared.URL_CHANGE_COUNT = shared.URL_CHANGE_COUNT + 1
+                    if shared.URL_CHANGE_COUNT < len(urls) +1:
+                        return get_rpc_response(method, list_params)
                     else:
                         logging.error("No URLS available")
                         raise Exception("No URLS available")
                     
             else:
-                count = 0
-                
+                shared.URL_CHANGE_COUNT = 0
+    
     count = 0
     for j in to_pop:
         logs.pop(j-count)

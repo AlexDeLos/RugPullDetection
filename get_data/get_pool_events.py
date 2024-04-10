@@ -34,6 +34,9 @@ def get_pool_events(events_name, hashed_event, pool_address, out_path, start_blo
     try:
         events = get_logs(pool, events_name, hashed_event, start_block, end_block, number_batches=10)
     except Exception as err:
+        if err.args[0] == 'No URLS available':
+            logging.error(f"No URLS available stopping")
+            raise err
         print(f"Exception occured in get_pool_events(): {err}")
         return
 
