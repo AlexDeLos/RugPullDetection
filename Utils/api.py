@@ -148,6 +148,7 @@ def clean_logs(contract, myevent, log):
         args_event = eval(eval_string)
         args_event = args_event[0]
     except IndexError as e:
+        print("Error in clean_logs")
         print(e)
         args_event = None
     return args_event
