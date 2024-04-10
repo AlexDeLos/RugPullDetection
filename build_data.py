@@ -37,6 +37,8 @@ run_events = args.events
 run_token_tx = args.token_tx
 token = args.token
 
+print(f"arguments: {args}")
+
 if platform.system() == "Windows":
     # Code for Windows
     print("Running on Windows")
