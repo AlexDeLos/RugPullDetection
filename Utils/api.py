@@ -75,15 +75,15 @@ def get_rpc_response(method, list_params=[]):
                     time.sleep(30)
                     return get_rpc_response(method, list_params)
                 else:
-                    logging.warning("change infura url to another one, this one is not working anymore wait 24h?")
+                    logging.warning(f"change infura url {url} to another one {urls[url_index + 1]}, this one is not working anymore wait 24h?")
 
-                    warnings.warn("change infura url to another one, this one is not working anymore wait 24h?")
+                    warnings.warn(f"change infura url {url} to another one {urls[url_index + 1]}, this one is not working anymore wait 24h?")
                     url_index= url_index + 1
                     url_index = url_index % len(urls)
                     shared.INFURA_URL_INDEX = url_index
                     count = count + 1
                     if count < len(urls) +1:
-                        return get_rpc_response(method, list_params, url_index)
+                        return get_rpc_response(method, list_params)
                     else:
                         logging.error("No URLS available")
                         raise Exception("No URLS available")
