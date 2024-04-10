@@ -11,7 +11,7 @@ import shared
 shared.init()
 
 
-def get_rpc_response(method, list_params=[]):
+def get_rpc_response(method, list_params=[], count = 0):
     """
     Parameters
     ----------
@@ -45,7 +45,6 @@ def get_rpc_response(method, list_params=[]):
     old_log = logs.copy()
     results = [ [] for _ in range(len(logs)) ]
     to_pop = []
-    count = 0
     for j, log in enumerate(old_log):
         if list(log.keys())[-1] == "error":
             logging.debug(f"Error in log {j}: {log['error']}")
@@ -83,7 +82,7 @@ def get_rpc_response(method, list_params=[]):
                     shared.INFURA_URL_INDEX = url_index
                     count = count + 1
                     if count < len(urls) +1:
-                        return get_rpc_response(method, list_params)
+                        return get_rpc_response(method, list_params, count)
                     else:
                         logging.error("No URLS available")
                         raise Exception("No URLS available")
