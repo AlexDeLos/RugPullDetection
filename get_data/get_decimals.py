@@ -24,7 +24,8 @@ def get_decimal_token(token_address):
         decimals = contract.functions.decimals().call()
     except Exception as e:
         decimals = -999
-        print(e)
+        if "429 Client Error: Too Many Requests for url" in e.args[0]:
+            raise Exception("Too many requests")
         print("Error: "+ str(e) + " getting decimals for " + token_address)
         # print(f"Error {e} getting decimals for {token_address}")
 

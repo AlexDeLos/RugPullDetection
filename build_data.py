@@ -200,8 +200,11 @@ try:
             decimals_dict["token_address"].append(token)
             #184 tokens
             try:
-                decimals_dict["decimals"].append(get_decimal_token(token))
+                decimal = get_decimal_token(token)
+                decimals_dict["decimals"].append(decimal)
             except:
+                if decimal == -999:
+                    raise Exception("Too many requests")
                 decimals_dict["decimals"].append(18)
         
     decimals = pd.DataFrame(decimals_dict)
