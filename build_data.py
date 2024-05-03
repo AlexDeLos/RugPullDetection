@@ -56,7 +56,7 @@ else:
     print(f"Running on an unsupported operating system: {platform.system()}")
 
 
-logging.basicConfig(filename="log_build_data.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
+logging.basicConfig(filename="log_build_data.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.DEBUG)
 # Set the memory limit in bytes
 
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
