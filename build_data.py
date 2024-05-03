@@ -36,7 +36,8 @@ get_pools_and_tokens = args.pools
 run_events = args.events
 run_token_tx = args.token_tx
 token = args.token
-
+print(run_events)
+print(run_token_tx)
 print(f"arguments: {args}")
 
 if platform.system() == "Windows":
@@ -55,7 +56,7 @@ else:
     print(f"Running on an unsupported operating system: {platform.system()}")
 
 
-logging.basicConfig(filename="built_logs_new.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
+logging.basicConfig(filename="log_build_data.log", filemode="w", format="%(name)s → %(levelname)s: %(message)s", level=logging.INFO)
 # Set the memory limit in bytes
 
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
