@@ -24,7 +24,7 @@ def get_decimal_token(token_address):
         decimals = contract.functions.decimals().call()
     except Exception as e:
         decimals = -999
-        print(json.stringify(e))
+        print(e)
         print("Error: "+ str(e) + " getting decimals for " + token_address)
         # print(f"Error {e} getting decimals for {token_address}")
 
