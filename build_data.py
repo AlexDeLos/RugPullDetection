@@ -194,33 +194,33 @@ try:
 
     #* run get_decimals.py
 
-    decimals_dict = {"token_address": [], "decimals": []}
-    for token in tokens:
-        if token not in decimals_dict["token_address"]:
-            decimals_dict["token_address"].append(token)
-            #184 tokens
-            decimal = get_decimal_token(token)
-            try:
-                decimals_dict["decimals"].append(decimal)
-            except:
-                # if decimal == -999:
-                #     raise Exception("Too many requests")
-                decimals_dict["decimals"].append(18)
+    # decimals_dict = {"token_address": [], "decimals": []}
+    # for token in tokens:
+    #     if token not in decimals_dict["token_address"]:
+    #         decimals_dict["token_address"].append(token)
+    #         #184 tokens
+    #         decimal = get_decimal_token(token)
+    #         try:
+    #             decimals_dict["decimals"].append(decimal)
+    #         except:
+    #             # if decimal == -999:
+    #             #     raise Exception("Too many requests")
+    #             decimals_dict["decimals"].append(18)
         
-    decimals = pd.DataFrame(decimals_dict)
-    decimals.to_csv(out_path + "/decimals.csv", index=False)
+    # decimals = pd.DataFrame(decimals_dict)
+    # decimals.to_csv(out_path + "/decimals.csv", index=False)
 
     logging.info("Decimals created ------------------------------------------------")
     print('created decimals_dict') #REACHED HERE
 
     #* run get_source_code.py
-    if not os.path.exists(out_path + "/source_code"):
-        os.makedirs(out_path + "/source_code")
-    for token in tokens:
-        if not os.path.exists(out_path + "/source_code/" + token + ".json"):
-            get_source_code(token, out_path + "/source_code")
-    logging.info("Source code created ------------------------------------------------")
-    print('created source_code')
+    # if not os.path.exists(out_path + "/source_code"):
+    #     os.makedirs(out_path + "/source_code")
+    # for token in tokens:
+    #     if not os.path.exists(out_path + "/source_code/" + token + ".json"):
+    #         get_source_code(token, out_path + "/source_code")
+    # logging.info("Source code created ------------------------------------------------")
+    # print('created source_code')
 
     if not os.path.exists(out_path + "/Token_tx"):
         os.makedirs(out_path + "/Token_tx")
