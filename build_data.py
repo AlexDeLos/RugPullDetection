@@ -297,7 +297,7 @@ try:
     # python ML/Labelling/extract_transfer_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
     subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--token", str(tokens[0]), "--to_block", str(eval_block_trans)])
     logging.info("extract_transfer_heuristics ran")
-
+    # need to run assing label.py
     # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
     logging.info("build_dataset ran")
 except Exception as e:
