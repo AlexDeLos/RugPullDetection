@@ -125,7 +125,7 @@ try:
 
     # obtain_hash_event('Transfer(address,address,uint256)')
     completed_pools = []
-    step_size = 60000
+    step_size = 6000
     total = len(pools_of_token.items())
     current = 0
     if run_events:
