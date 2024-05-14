@@ -223,7 +223,7 @@ try:
     if not os.path.exists(out_path + "/Token_tx"):
         os.makedirs(out_path + "/Token_tx")
 
-    step_size = 5000
+    step_size = 1000
     count = 0
     #* run get_transfers.py
 
