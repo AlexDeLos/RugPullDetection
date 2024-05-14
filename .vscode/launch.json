@@ -13,8 +13,8 @@
             //  -t True --token 0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce
             "args": [
                 // "-e", "True",
-                // "-t", "True",
-                "--token", "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+                "-t", "True",
+                // "--token", "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
             ]
         }
     ]

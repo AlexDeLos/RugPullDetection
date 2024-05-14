@@ -232,7 +232,7 @@ try:
         for token_address in tokens:
             try:
                 print(f"Getting last block for {token_address}")
-                transfers = pd.read_csv(out_path + "/Token_tx/" + token + ".csv", iterator=True, chunksize=1000, index_col=0)
+                transfers = pd.read_csv(out_path + "/Token_tx/" + token_address + ".csv", iterator=True, chunksize=1000, index_col=0)
                 last_block = 0
                 for transfer in transfers:
                     cur_max = transfer['block_number'].max()
