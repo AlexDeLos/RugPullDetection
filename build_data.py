@@ -223,7 +223,7 @@ try:
     if not os.path.exists(out_path + "/Token_tx"):
         os.makedirs(out_path + "/Token_tx")
 
-    step_size = 5000
+    step_size = 6000
     count = 0
     #* run get_transfers.py
 
@@ -261,7 +261,8 @@ try:
 
                 while True:
                     number_of_steps = (eval_block_trans- new_from_block)//step_size
-                    get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
+                    if new_from_block!=new_eval_block:
+                        get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
                     new_from_block = new_eval_block
                     new_eval_block += step_size
                     if new_eval_block > eval_block_trans:
