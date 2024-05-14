@@ -62,8 +62,6 @@ logging.basicConfig(filename="log_build_data.log", filemode="w", format="%(name)
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
 #these are block from Jet coin token
 
-# from_block = 10008355
-# eval_block =13152303 #shared.BLOCKSTUDY
 from_block = 10008355
 eval_block = shared.BLOCKSTUDY + 1000000
 #! do the total number of transactions change anything? do I need to normalize the data?
@@ -127,7 +125,7 @@ try:
 
     # obtain_hash_event('Transfer(address,address,uint256)')
     completed_pools = []
-    step_size = 55000
+    step_size = 60000
     total = len(pools_of_token.items())
     current = 0
     if run_events:
@@ -247,10 +245,11 @@ try:
                     print(f"Token_tx {token_address} created and finished")
                 else:
                     completed = False
-            except:
+            except Exception as e:
                 new_from_block = from_block_trans
                 completed = False
                 print("Problem getting last block")
+                print(e)
                 
 
             if not completed:
