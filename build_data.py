@@ -229,6 +229,8 @@ try:
 
     # 0x6B175474E89094C44Da98b954EedeAC495271d0F
     if run_token_tx:
+        count_tokens = 0
+        len_tokens = len(tokens)
         for token_address in tokens:
             try:
                 print(f"Getting last block for {token_address}")
@@ -269,11 +271,11 @@ try:
                         new_eval_block = eval_block_trans
                         get_transfers(token_address, out_path + "/Token_tx", new_from_block, new_eval_block)
                         print(f"Token_tx {token_address} created and finished")
+                        logging.info(f"Token_tx {token_address} created {str(count)}. Left {number_of_steps} steps")
                         break
                     
                     print(f"Token_tx {token_address} created {str(count)}")
                     print (f"Left {number_of_steps} steps")
-                    logging.info(f"Token_tx {token_address} created {str(count)}. Left {number_of_steps} steps")
                     count += 1
 
     logging.info("Token_tx created ------------------------------------------------")
