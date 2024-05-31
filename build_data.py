@@ -278,8 +278,10 @@ try:
                     logging.info(f"Token_tx {token_address} created {str(count)}. Left {number_of_steps} steps")
                     count += 1
             logging.info(f"Token_tx {token_address} created ------------------------------------------------")
+            print(f"Token_tx {token_address} created ------------------------------------------------")
             count_tokens += 1
             logging.info(f"Token_tx {token_address} created {str(count_tokens)} out of {len_tokens}")
+            print(f"Token_tx {token_address} created {str(count_tokens)} out of {len_tokens}")
 
     logging.info("Token_tx created ------------------------------------------------")
     print('created token_tx') #REACHED HERE
