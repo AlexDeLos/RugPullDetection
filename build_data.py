@@ -233,14 +233,14 @@ try:
         len_tokens = len(tokens)
         for token_address in tokens:
             try:
-                print(f"Getting last block for {token_address}")
+                # print(f"Getting last block for {token_address}")
                 transfers = pd.read_csv(out_path + "/Token_tx/" + token_address + ".csv", iterator=True, chunksize=1000, index_col=0)
                 last_block = 0
                 for transfer in transfers:
                     cur_max = transfer['block_number'].max()
                     if cur_max > last_block:
                         last_block = cur_max
-                print(f"Last block for {token_address} is {last_block}")
+                # print(f"Last block for {token_address} is {last_block}")
                 new_from_block = last_block
                 if new_from_block > eval_block_trans - step_size:
                     completed = True
@@ -273,8 +273,8 @@ try:
                         print(f"Token_tx {token_address} created and finished")
                         break
                     
-                    print(f"Token_tx {token_address} created {str(count)}")
-                    print (f"Left {number_of_steps} steps")
+                    # print(f"Token_tx {token_address} created {str(count)}")
+                    # print (f"Left {number_of_steps} steps")
                     logging.info(f"Token_tx {token_address} created {str(count)}. Left {number_of_steps} steps")
                     count += 1
             logging.info(f"Token_tx {token_address} created ------------------------------------------------")
