@@ -29,7 +29,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     """
 
     # Initialise contract objects and get the transactions.
-    print(f"Getting transfers for {token_address}, from block {start_block} to {end_block}")
+    # print(f"Getting transfers for {token_address}, from block {start_block} to {end_block}")
     try:
         token_address = Web3.toChecksumAddress(token_address)
         contract = shared.web3.eth.contract(token_address, abi=shared.ABI)
@@ -42,28 +42,28 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     # Save txs in a Dataframe.
     txs = [[transaction['transactionHash'].hex(), transaction["blockNumber"], transaction["args"]['from'],
             transaction["args"]['to'], transaction["args"]['value'] / 10 ** decimal] for transaction in transfers]
-    print("Creating the dataframe")
+    # print("Creating the dataframe")
     transfers = pd.DataFrame(txs, columns=["transactionHash", "block_number", "from", "to", "value"])
-    print("Created the dataframe")
+    # print("Created the dataframe")
     # now we set the transactionHash as the index
     transfers.set_index("transactionHash", inplace=True)
-    print("Set the index")
+    # print("Set the index")
     m = 'w'
     if os.path.exists(out_path + "/" + token_address + ".csv"):
-        print("the file already exists")
+        # print("the file already exists")
         transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", iterator=True, chunksize=1000, index_col=0)
         m = 'a'
-        print("opened the old file")
+        # print("opened the old file")
         c_overlap = 0
         for transfer_old in transfers_old:
             if transfer_old.index.isin(transfers.index).any():
                 c_overlap += 1
-                print('they have indices in common')
+                # print('they have indices in common')
                 transfer_new = transfers[~transfers.index.isin(transfer_old.index)]
                 transfers = transfer_new
                 
         # transfers = pd.concat([transfer_old, transfers])
-        print("concatenated the two dataframes")
+        # print("concatenated the two dataframes")
 
     transfers.to_csv(out_path + "/" + token_address + ".csv", index=True, mode=m, header=m == 'w')
     print(f"Saved {len(transfers)} transfers for {token_address} in {out_path}/{token_address}.csv")
