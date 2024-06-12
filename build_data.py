@@ -299,14 +299,13 @@ try:
     subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
     # extract_transfer_heuristics.py
     print("extract_pool_heuristics ran")
-    print("Running extract_transfer_heuristics, on token: ", token)
+    # print("Running extract_transfer_heuristics, on token: ", token)
     # logging.info(f"Running extract_transfer_heuristics, on token: {token}")
-    # python ML/Labelling/extract_transfer_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
-    subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
-    print("extract_transfer_heuristics ran")
+    # subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
+    # print("extract_transfer_heuristics ran")
     # need to run assing label.py
     # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
-    logging.info("build_dataset ran")
+    # logging.info("build_dataset ran")
 except Exception as e:
     logging.error(f"Error: {e}")
     print(f"Error: {e}")
