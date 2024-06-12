@@ -206,6 +206,7 @@ try:
                 decimals_dict["decimals"].append(18)
         
     decimals = pd.DataFrame(decimals_dict)
+    print(decimals)
     decimals.to_csv(out_path + "/decimals.csv", index=False)
 
     logging.info("Decimals created ------------------------------------------------")
