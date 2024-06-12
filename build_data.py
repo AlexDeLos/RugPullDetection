@@ -193,20 +193,23 @@ try:
     #* run get_decimals.py
 
     decimals_dict = {"token_address": [], "decimals": []}
+    total_tokens = len(tokens)
+    count = 0
     for token in tokens:
+        print(f"Getting decimals for {count} out of {total_tokens}")
         if token not in decimals_dict["token_address"]:
             decimals_dict["token_address"].append(token)
             #184 tokens
             decimal = get_decimal_token(token)
             try:
                 decimals_dict["decimals"].append(decimal)
-                print(f"Token {token} has {decimal} decimals")
+                # print(f"Token {token} has {decimal} decimals")
             except:
                 # if decimal == -999:
                 #     raise Exception("Too many requests")
                 decimals_dict["decimals"].append(18)
-                print(f"Token {token} has been given 18 decimals")
-        
+                # print(f"Token {token} has been given 18 decimals")
+        count += 1
     decimals = pd.DataFrame(decimals_dict)
     # print(decimals)
     decimals.to_csv(out_path + "/decimals.csv", index=False)
