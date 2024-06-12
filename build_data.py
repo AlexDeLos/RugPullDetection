@@ -200,10 +200,12 @@ try:
             decimal = get_decimal_token(token)
             try:
                 decimals_dict["decimals"].append(decimal)
+                print(f"Token {token} has {decimal} decimals")
             except:
                 # if decimal == -999:
                 #     raise Exception("Too many requests")
                 decimals_dict["decimals"].append(18)
+                print(f"Token {token} has been given 18 decimals")
         
     decimals = pd.DataFrame(decimals_dict)
     # print(decimals)
