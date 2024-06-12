@@ -126,6 +126,6 @@ try:
 except Exception as err:
     print("Error: ", err)
     pass
-print("printing df: ", df)
+print("printing df: ")
 df.to_csv(data_path+"/pool_heuristics.csv", index=False)
 print("Saved the pool heuristics in ", data_path+"/pool_heuristics.csv")

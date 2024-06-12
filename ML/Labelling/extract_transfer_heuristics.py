@@ -61,5 +61,7 @@ try:
     df = pd.concat([df_old, df], ignore_index=True)
 except FileNotFoundError:
     pass
+print("df looks like: ")
 df.to_csv(data_path+"/transfer_heuristics.csv", index=False)
+print("Saved transfer heuristics to ", data_path+"/transfer_heuristics.csv.")
 print("Finished transfer heuristics.")
