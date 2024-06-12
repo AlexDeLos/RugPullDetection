@@ -191,8 +191,11 @@ try:
     # ! this is not needed
 
     #* run get_decimals.py
-
-    decimals_dict = {"token_address": [], "decimals": []}
+    if os.path.exists(out_path + "/decimals.csv"):
+        print("Decimals already exist")
+        decimals_dict = pd.read_csv(out_path + "/decimals.csv")
+    else:
+        decimals_dict = {"token_address": [], "decimals": []}
     total_tokens = len(tokens)
     count = 0
     for token in tokens:
@@ -210,6 +213,10 @@ try:
                 decimals_dict["decimals"].append(18)
                 # print(f"Token {token} has been given 18 decimals")
         count += 1
+        if count % 1000 == 0:
+            print(f"Decimals for {count} out of {total_tokens} have been saved")
+            decimals = pd.DataFrame(decimals_dict)
+            decimals.to_csv(out_path + "/decimals.csv", index=False)
     decimals = pd.DataFrame(decimals_dict)
     # print(decimals)
     decimals.to_csv(out_path + "/decimals.csv", index=False)
