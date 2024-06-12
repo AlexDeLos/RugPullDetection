@@ -116,14 +116,15 @@ df = pd.DataFrame(token_features).transpose()
 df.index = df['token_address']
 try:
     df_old = pd.read_csv(data_path+"/pool_heuristics.csv", index_col="token_address")
-    print("df_old: ", df_old)
+    # print("df_old: ", df_old)
     if df_old.row.isin(df.index).any():
         print('they have indices in common')
         df_old = df_old[~df_old.index.isin(df.index)]
-    print("df_old: ", df_old)
-    print("df: ", df)
+    # print("df_old: ", df_old)
+    # print("df: ", df)
     df = pd.concat([df_old, df])
-except:
+except Exception as err:
+    print("Error: ", err)
     pass
 print("printing df: ", df)
 df.to_csv(data_path+"/pool_heuristics.csv", index=False)
