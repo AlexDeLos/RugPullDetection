@@ -192,21 +192,21 @@ try:
 
     #* run get_decimals.py
 
-    # decimals_dict = {"token_address": [], "decimals": []}
-    # for token in tokens:
-    #     if token not in decimals_dict["token_address"]:
-    #         decimals_dict["token_address"].append(token)
-    #         #184 tokens
-    #         decimal = get_decimal_token(token)
-    #         try:
-    #             decimals_dict["decimals"].append(decimal)
-    #         except:
-    #             # if decimal == -999:
-    #             #     raise Exception("Too many requests")
-    #             decimals_dict["decimals"].append(18)
+    decimals_dict = {"token_address": [], "decimals": []}
+    for token in tokens:
+        if token not in decimals_dict["token_address"]:
+            decimals_dict["token_address"].append(token)
+            #184 tokens
+            decimal = get_decimal_token(token)
+            try:
+                decimals_dict["decimals"].append(decimal)
+            except:
+                # if decimal == -999:
+                #     raise Exception("Too many requests")
+                decimals_dict["decimals"].append(18)
         
-    # decimals = pd.DataFrame(decimals_dict)
-    # decimals.to_csv(out_path + "/decimals.csv", index=False)
+    decimals = pd.DataFrame(decimals_dict)
+    decimals.to_csv(out_path + "/decimals.csv", index=False)
 
     logging.info("Decimals created ------------------------------------------------")
     print('created decimals_dict') #REACHED HERE
