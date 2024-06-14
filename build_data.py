@@ -194,8 +194,8 @@ try:
     if os.path.exists(out_path + "/decimals.csv"):
         print("Decimals already exist")
         decimals_dict = pd.read_csv(out_path + "/decimals.csv")
-        # turn this 2 columns (token_address,decimals) csv to a dictionary
-        decimals_dict = decimals_dict.set_index('token_address').to_dict()['decimals']
+        # turn this 2 columns (token_address,decimals) csv to a dictionary with token_address and decimals as keys
+        decimals_dict = decimals_dict.set_index('token_address').T.to_dict('list')
         print(decimals_dict)
     else:
         decimals_dict = {"token_address": [], "decimals": []}
