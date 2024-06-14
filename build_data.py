@@ -191,39 +191,39 @@ try:
     # ! this is not needed
 
     #* run get_decimals.py
-    if os.path.exists(out_path + "/decimals.csv"):
-        print("Decimals already exist")
-        decimals_dict = pd.read_csv(out_path + "/decimals.csv")
-        # turn this 2 columns (token_address,decimals) csv to a dictionary with token_address and decimals as keys
-        # has to fit this structure {"token_address": [], "decimals": []}
-        decimals_dict = decimals_dict.to_dict('list')
-        print(decimals_dict)
-    else:
-        decimals_dict = {"token_address": [], "decimals": []}
-    total_tokens = len(tokens)
-    count = 0
-    for token in tokens:
-        print(f"Getting decimals for {count} out of {total_tokens}")
-        if token not in decimals_dict["token_address"]:
-            decimals_dict["token_address"].append(token)
-            #184 tokens
-            decimal = get_decimal_token(token)
-            try:
-                decimals_dict["decimals"].append(decimal)
-                # print(f"Token {token} has {decimal} decimals")
-            except:
-                # if decimal == -999:
-                #     raise Exception("Too many requests")
-                decimals_dict["decimals"].append(18)
-                # print(f"Token {token} has been given 18 decimals")
-        count += 1
-        if count % 1000 == 0:
-            print(f"Decimals for {count} out of {total_tokens} have been saved")
-            decimals = pd.DataFrame(decimals_dict)
-            decimals.to_csv(out_path + "/decimals.csv", index=False)
-    decimals = pd.DataFrame(decimals_dict)
-    # print(decimals)
-    decimals.to_csv(out_path + "/decimals.csv", index=False)
+    # if os.path.exists(out_path + "/decimals.csv"):
+    #     print("Decimals already exist")
+    #     decimals_dict = pd.read_csv(out_path + "/decimals.csv")
+    #     # turn this 2 columns (token_address,decimals) csv to a dictionary with token_address and decimals as keys
+    #     # has to fit this structure {"token_address": [], "decimals": []}
+    #     decimals_dict = decimals_dict.to_dict('list')
+    #     print(decimals_dict)
+    # else:
+    #     decimals_dict = {"token_address": [], "decimals": []}
+    # total_tokens = len(tokens)
+    # count = 0
+    # for token in tokens:
+    #     print(f"Getting decimals for {count} out of {total_tokens}")
+    #     if token not in decimals_dict["token_address"]:
+    #         decimals_dict["token_address"].append(token)
+    #         #184 tokens
+    #         decimal = get_decimal_token(token)
+    #         try:
+    #             decimals_dict["decimals"].append(decimal)
+    #             # print(f"Token {token} has {decimal} decimals")
+    #         except:
+    #             # if decimal == -999:
+    #             #     raise Exception("Too many requests")
+    #             decimals_dict["decimals"].append(18)
+    #             # print(f"Token {token} has been given 18 decimals")
+    #     count += 1
+    #     if count % 1000 == 0:
+    #         print(f"Decimals for {count} out of {total_tokens} have been saved")
+    #         decimals = pd.DataFrame(decimals_dict)
+    #         decimals.to_csv(out_path + "/decimals.csv", index=False)
+    # decimals = pd.DataFrame(decimals_dict)
+    # # print(decimals)
+    # decimals.to_csv(out_path + "/decimals.csv", index=False)
 
     logging.info("Decimals created ------------------------------------------------")
     print('created decimals_dict') #REACHED HERE
