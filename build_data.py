@@ -62,11 +62,11 @@ logging.basicConfig(filename="log_build_data.log", filemode="w", format="%(name)
 #! THIS NEEDS TO BE CHANGED TO THE CURRENT BLOCK WHEN ACTUAL TESTING STARTS
 #these are block from Jet coin token
 
-from_block = 10008355
-eval_block = shared.BLOCKSTUDY + 1000000
+from_block_trans = 10008355
+eval_block_trans = shared.BLOCKSTUDY + 1000000
 #! do the total number of transactions change anything? do I need to normalize the data?
-from_block_trans = shared.BLOCKSTUDY 
-eval_block_trans = shared.BLOCKSTUDY + 60000
+from_block_trans = shared.BLOCKSTUDY_FROM 
+eval_block_trans = shared.BLOCKSTUDY
 
 
 # This will take a while, get comfortable <3
@@ -77,8 +77,8 @@ try:
         os.makedirs(out_path)
 
     if get_pools_and_tokens:
-        get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block, to_block = eval_block)
-        # get_token_and_pools(out_path, dex='sushiswap', from_block = from_block, to_block = eval_block)
+        get_token_and_pools(out_path, dex='uniswap_v2', from_block_trans = from_block_trans, to_block = eval_block_trans)
+        # get_token_and_pools(out_path, dex='sushiswap', from_block_trans = from_block_trans, to_block = eval_block_trans)
     else:
         print("Not getting pools and tokens again")
 
@@ -313,7 +313,7 @@ try:
     # python ML/Labelling/extract_pool_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
     print("Running extract_pool_heuristics, on token: ", token)
     # logging.info(f"Running extract_pool_heuristics, on token: {token}")
-    # subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
+    subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
     # extract_transfer_heuristics.py
     print("extract_pool_heuristics ran")
     # print("Running extract_transfer_heuristics, on token: ", token)
