@@ -23,6 +23,8 @@ label_list = []
 df = pd.concat([df_transfers, df_pool], axis=1, join='inner')
 df['inactive'] = df['inactive'] * df['inactive_transfers']
 df = df.drop(['inactive_transfers'], axis=1)
+# print out the data frame
+print(df)
 
 if token is None:
     healthy_tokens = pd.read_csv(data_path+ "/healthy_tokens.csv")['token_address']
