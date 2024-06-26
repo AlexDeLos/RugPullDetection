@@ -66,6 +66,8 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
 
         WETH_position = 1 if shared.WETH == pool_info['token1'] else 0
         decimal = decimals.loc[address].iloc[0]
+        if decimal == -999:
+            decimal = 18
 
         for eval_block in eval_blocks:
             computed_features = {}
