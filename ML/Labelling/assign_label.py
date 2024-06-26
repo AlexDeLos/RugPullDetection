@@ -41,7 +41,7 @@ for token in healthy_tokens:
 df_inactius = df.loc[(df["inactive"] == 1) & (df['late_creation'] == 0)]
 rug_pull    = df_inactius.loc[(df_inactius["liq_MDD"] == -1)]
 rug_pull_1  = rug_pull.loc[rug_pull['liq_RC'] <= 0.2]
-
+print("rug_pull_1: ", rug_pull_1)
 for token in rug_pull_1.index:
     label_list.append([token, df_pool.loc[token]['pool_address'], 0, 1])
 
@@ -49,6 +49,8 @@ df_inactius = df.loc[(df["inactive"] == 1) & (df['late_creation'] == 0)]
 rug_pull    = df_inactius.loc[(df_inactius["liq_MDD"] == 0)]
 rug_pull    = rug_pull.loc[(rug_pull['price_MDD'] >= -1) & (rug_pull['price_MDD'] <= -0.9)]
 rug_pull_2  = rug_pull.loc[(rug_pull['price_RC'] >= 0) & (rug_pull['price_RC'] <= 0.01)]
+
+print("rug_pull_2: ", rug_pull_2)
 
 for token in rug_pull_2.index:
     label_list.append([token, df_pool.loc[token]['pool_address'], 0, 2])
