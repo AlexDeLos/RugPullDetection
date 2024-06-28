@@ -83,7 +83,7 @@ def init():
     # Define global objects
     BLOCKS_PER_DAY    = 7500
     BLOCKSTUDY_FROM   = 13152303 #10822038
-    BLOCKSTUDY        = 13212303
+    BLOCKSTUDY        = 13152303 + 160000*2
     BLOCKS_TO_BE_INACTIVE  =  BLOCKS_PER_DAY *30
 
     DATA_PATH = "./data_mine"
