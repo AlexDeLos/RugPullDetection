@@ -75,7 +75,7 @@ try:
         os.makedirs(out_path)
 
     if get_pools_and_tokens:
-        get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block_trans, from_block = eval_block_trans)
+        get_token_and_pools(out_path, dex='uniswap_v2', from_block = from_block_trans, to_block = eval_block_trans)
         # get_token_and_pools(out_path, dex='sushiswap', from_block_trans = from_block_trans, to_block = eval_block_trans)
     else:
         print("Not getting pools and tokens again")
