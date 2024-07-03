@@ -1,4 +1,39 @@
 # RugPullDetection
+
+### Notes
+The main task is the generation of the data to be used in training. This is done by the build_data.py file in a nohup process.
+#### nohup informantion
+We use nohup so that we can close the terminal and the code continues to run in the instance. The command structure is the following: "nohup python nohup python3 example_run.py --example flag > example.out". At time of writting the current runing command is: "nohup python nohup python3 build_data.py -e True -t True --data_path full_data_2 > example.out"".
+Running this will produce to output files, a .out file (focus on this one, it will show all the prints) and a .log file.
+
+#### code flags
+For build_data.py the flags are:
+ - --data_path: this is the most important flag, it determines where the data is saved, this by default is "./data_run_2" but it is currently running with value "full_data_2".
+ - --pools: Boolean flag that determines if the pools and tokens should be extracted again. Should really only be ran if you change the shared.BLOCKSTUDY_FROM and shared.BLOCKSTUDY values.
+ - --events: Determines if the events should be collected again.
+ - --token_tx: Determines if the transfer events should be collected again.
+
+ Other flags of note:
+ - --token: this flag is to be used when testing the fully trained model, please ignore it.
+#### Important files
+ - data/healthy_tokens.cvs: this file need to be present in to data folder and need to be added manually.
+ - build_data.py: This generates the following files: "pool_sync_events/pool.json", "pool_transfer_events/pool.json", "decimals.csv", "pool_dict.json", "pools_of_token.json", "tokens.csv".
+ - ML/Labelling/assing_label.py: creates the "labeled_list.py"
+#### Important folders
+- ML/Labelling -> has all the functions to create the labels.csv file
+#### Trouble shooting steps
+- If the instance crashed then make the step veriable in the build_data.py file smaller
+- Check the running precesses. with "ps wx"
+- If the process is no longer running check the logs to see why it stopped
+- Check the logs -> if it is a normal python error then just fix it.
+-  If "extract_transfer_heuristics ran" has been printed at the end then it finished -> check the data_path folder to make sure the JSONs and cvs files look good.
+
+#### What to do when it is done
+- Attempt to run the "assign_label.py" file with the proper --data_path flag and NO TOKEN FLAG. -> this should make a "labeled_list.csv" file
+- The attempt to run "build_dataset.py" -> this should generate a "X.csv" file
+- Feel free to try and run train the model now, but you have done all that I expected :)
+
+
 ### Introduction
 
 In this repository we will find the necessary tools to replicate the work made in [Do not rug on me](https://arxiv.org/abs/2201.07220). This repository, allows to download all the necessary data of UniswapV2 pools in the Ethereum blockchain. That is, all the PairPools, with their liquidity, prices and Add/remove events, all the source codes of the tokens,...
@@ -45,6 +80,7 @@ Uniswap, like other DEXs, has gained much attention this year because it is a no
 ### Reference
 
 - [Do not rug on me](https://arxiv.org/abs/2201.07220)
+
 
 
 
