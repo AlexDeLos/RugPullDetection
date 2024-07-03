@@ -123,7 +123,7 @@ try:
 
     # obtain_hash_event('Transfer(address,address,uint256)')
     completed_pools = []
-    step_size = 6000
+    step_size = 3000
     total = len(pools_of_token.items())
     current = 0
     if run_events:
@@ -238,7 +238,7 @@ try:
     if not os.path.exists(out_path + "/Token_tx"):
         os.makedirs(out_path + "/Token_tx")
 
-    step_size = 10000
+    step_size = 5000
     count = 0
     #* run get_transfers.py
 
