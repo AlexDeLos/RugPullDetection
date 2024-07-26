@@ -2,8 +2,9 @@
 
 ### Notes
 The main task is the generation of the data to be used in training. This is done by the build_data.py file in a nohup process.
-#### nohup informantion
-We use nohup so that we can close the terminal and the code continues to run in the instance. The command structure is the following: "nohup python nohup python3 example_run.py --example flag > example.out". At time of writting the current runing command is: "nohup python nohup python3 build_data.py -e True -t True --data_path full_data_2 > example.out"".
+
+#### nohup information
+We use nohup so that we can close the terminal and the code continues to run in the instance. The command structure is the following: "nohup python nohup python3 example_run.py --example flag > example.out". At time of writting the current runing command is: `nohup python nohup python3 build_data.py -e True -t True --data_path full_data_2 > example.out`.
 Running this will produce to output files, a .out file (focus on this one, it will show all the prints) and a .log file.
 
 #### code flags
@@ -19,8 +20,10 @@ For build_data.py the flags are:
  - data/healthy_tokens.cvs: this file need to be present in to data folder and need to be added manually.
  - build_data.py: This generates the following files: "pool_sync_events/pool.json", "pool_transfer_events/pool.json", "decimals.csv", "pool_dict.json", "pools_of_token.json", "tokens.csv".
  - ML/Labelling/assing_label.py: creates the "labeled_list.py"
+
 #### Important folders
 - ML/Labelling -> has all the functions to create the labels.csv file
+
 #### Trouble shooting steps
 - If the instance crashed then make the step veriable in the build_data.py file smaller
 - Check the running precesses. with "ps wx"

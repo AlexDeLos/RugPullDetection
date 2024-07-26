@@ -265,7 +265,7 @@ try:
             except Exception as e:
                 new_from_block = from_block_trans
                 completed = False
-                print("Problem getting last block")
+                print("Problem getting last block (buid_data.py)")
                 print(e)
                 
 

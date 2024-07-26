@@ -54,7 +54,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
         transfers_old = pd.read_csv(out_path + "/" + token_address + ".csv", iterator=True, chunksize=1000, index_col=0)
         m = 'a'
         # print("opened the old file")
-        c_overlap = 0
+        c_overlap = 01
         for transfer_old in transfers_old:
             if transfer_old.index.isin(transfers.index).any():
                 c_overlap += 1

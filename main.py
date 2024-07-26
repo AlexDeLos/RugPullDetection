@@ -250,7 +250,7 @@ if run_token_tx:
         except:
             new_from_block = from_block_trans
             completed = False
-            print("Problem getting last block")
+            print("Problem getting last block (main.py)")
             
 
         if not completed:
