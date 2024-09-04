@@ -23,11 +23,11 @@ shared.init()
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data_path", type=str, default="./data_run_2", help="Path to data directory")
-parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
+parser.add_argument("--data_path", type=str, default="./data_run", help="Path to data directory")
+parser.add_argument("--pools", type=bool, default=True, help="Do you want to get pools and tokens again?")
 parser.add_argument("--token" , type=str, default=None, help="Token to study")
-parser.add_argument("-e", "--events", type=bool, default=False, help="run event gathering")
-parser.add_argument("-t", "--token_tx", type=bool, default=False, help="run token tx gathering")
+parser.add_argument("-e", "--events", type=bool, default=True, help="run event gathering")
+parser.add_argument("-t", "--token_tx", type=bool, default=True, help="run token tx gathering")
 # parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="Block to study")
 args = parser.parse_args()
 
