@@ -9,7 +9,6 @@ from get_data.get_tokens_pools import get_token_and_pools
 from features.transfer_features import get_transfer_features, get_curve
 from Utils.abi_info import obtain_hash_event
 from features.pool_features import get_pool_features
-import xgboost as xgb
 import subprocess
 import json
 
