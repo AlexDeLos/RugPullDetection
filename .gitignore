@@ -139,3 +139,4 @@ temp_in_*/*
 data*/*
 /.vscode
 /.vscode
+full_data/Token_tx/*

@@ -22,7 +22,7 @@ shared.init()
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data_path", type=str, default="./data_run", help="Path to data directory")
+parser.add_argument("--data_path", type=str, default="./full_data", help="Path to data directory")
 parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
 parser.add_argument("--token" , type=str, default=None, help="Token to study")
 parser.add_argument("-e", "--events", type=bool, default=False, help="run event gathering")

@@ -31,7 +31,7 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
     # Initialise contract objects and get the transactions.
     # print(f"Getting transfers for {token_address}, from block {start_block} to {end_block}")
     try:
-        token_address = Web3.toChecksumAddress(token_address)
+        token_address = shared.web3.to_checksum_address(token_address)
         contract = shared.web3.eth.contract(token_address, abi=shared.ABI)
         transfers = get_logs(contract, "Transfer", hash_log, start_block, end_block, number_batches=1)
         print("Got the logs")

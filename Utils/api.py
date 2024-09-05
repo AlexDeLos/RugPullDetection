@@ -143,10 +143,12 @@ def clean_logs(contract, myevent, log):
     logging.debug(f"Cleaning logs for event {myevent} on contract {contract.address}")
     log_dict = AttributeDict({'logs': log})
     ret = []
-    eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
+    eval_string = 'contract.events.{}().process_receipt({})'.format(myevent, log_dict)
     try:
         # suppress user warnings here
-        print(eval_string)
+        # transfer = eval("contract.events.{}()".format(myevent))
+
+        # print(eval_string)
         args_event = eval(eval_string)
         
         args_event = args_event[0]
