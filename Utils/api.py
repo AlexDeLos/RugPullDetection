@@ -147,6 +147,8 @@ def clean_logs(contract, myevent, log):
     try:
         # suppress user warnings here
         args_event = eval(eval_string)
+        print(args_event)
+        
         args_event = args_event[0]
     except IndexError as e:
         print("Error in clean_logs")
