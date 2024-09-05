@@ -194,7 +194,6 @@ try:
         # turn this 2 columns (token_address,decimals) csv to a dictionary with token_address and decimals as keys
         # has to fit this structure {"token_address": [], "decimals": []}
         decimals_dict = decimals_dict.to_dict('list')
-        print(decimals_dict)
     else:
         decimals_dict = {"token_address": [], "decimals": []}
     total_tokens = len(tokens)
