@@ -146,7 +146,7 @@ def clean_logs(contract, myevent, log):
     eval_string = 'contract.events.{}().processReceipt({})'.format(myevent, log_dict)
     try:
         # suppress user warnings here
-        print(args_event)
+        print(eval_string)
         args_event = eval(eval_string)
         
         args_event = args_event[0]
