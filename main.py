@@ -230,8 +230,11 @@ count = 0
 #* run get_transfers.py
 
 # 0x6B175474E89094C44Da98b954EedeAC495271d0F
+tokens_skip = ['0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2']
 if run_token_tx:
     for token_address in tokens:
+        if token_address in tokens_skip:
+            continue
         try:
             print(f"Getting last block for {token_address}")
             transfers = pd.read_csv(out_path + "/Token_tx/" + token + ".csv", iterator=True, chunksize=1000, index_col=0)
