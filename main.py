@@ -225,12 +225,12 @@ print('created source_code')
 if not os.path.exists(out_path + "/Token_tx"):
     os.makedirs(out_path + "/Token_tx")
 
-step_size = 1000
+step_size = 25000
 count = 0
 #* run get_transfers.py
 
 # 0x6B175474E89094C44Da98b954EedeAC495271d0F
-tokens_skip = ['0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2']
+# tokens_skip = ['0x7674d5Fa0f17a9A027f49f/6c3B32046770E076eA','0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2']# done or long tokens
 if run_token_tx:
     for token_address in tokens:
         if token_address in tokens_skip:
