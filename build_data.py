@@ -219,7 +219,7 @@ try:
 
     
     #* run get_transfers.py
-    if run_token_tx:
+    if True:
         count_tokens = 0
         len_tokens = len(tokens)
         for token_address in tokens:
