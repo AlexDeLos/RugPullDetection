@@ -64,6 +64,10 @@ def get_transfers(token_address, out_path, start_block, end_block, decimal=18):
                 
         # transfers = pd.concat([transfer_old, transfers])
         # print("concatenated the two dataframes")
+    # if the dataframe is not empty, check that there are the transactionHash,block_number,from,to,value columns
+    if not transfers.empty:
+        assert all(col in transfers.columns for col in ["transactionHash", "block_number", "from", "to", "value"])
+        raise ValueError(f"Missing columns in {token_address} dataframe")
 
     transfers.to_csv(out_path + "/" + token_address + ".csv", index=True, mode=m, header=m == 'w')
     print(f"Saved {len(transfers)} transfers for {token_address} in {out_path}/{token_address}.csv")

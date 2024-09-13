@@ -214,7 +214,7 @@ try:
     if not os.path.exists(out_path + "/Token_tx"):
         os.makedirs(out_path + "/Token_tx")
 
-    step_size = 2000
+    step_size = 3000
     count = 0
 
     
