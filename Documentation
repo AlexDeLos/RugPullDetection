@@ -1,0 +1,58 @@
+# Data Building
+
+In order to build a dataset one must run the ```build_data.py``` script.\
+This script takes the following arguments:
+1. --data_path: path to a folder where teh data will be stored, this folder must contain a ```healthy_tokens.csv``` file listing all healthy tokens.
+2. --pools: binary flag that decides if the token and pool gathering will happen again
+3. --events: binary flag that decides if the event gathering part will be ran
+4. --token_tx: binary flag that decides if the transaction gathering part will be ran
+
+## Important constants
+1. ```shared.BLOCKSTUDY_FROM``` and ```shared.BLOCKSTUDY``` the start and end block for the time period that the data will be extracted for.
+2. ```step_size```: some data is to large to handle all at once, so the study block are split into block sizes, this makes the code run slower but stops the instance from running out of memory and crashing.
+
+## Coded sections
+
+This script has several sections that iterate over the tokens to create the respective csv files, in this section we will over them in the order the appear in the script.
+
+### Getting pools and tokens
+
+get_token_and_pools() is a function called that creates the following files:
+1. ```tokens.csv```: list of all the tokens that have had pools created during the period covered by the selected blocks.
+2. ```pool_dict.json``` a dictionary of all pools created in the period and the tokens in them. The tokens referred in this dictionary are the same as in ```token.csv```.
+3. ```pools_of_token.json``` Another dictionary but this one uses the tokens as a key to their pools unlike in the previous dictionary.
+
+These values are then stored in variables to be used in the code.
+
+### Getting pool events
+
+This sections the events of the pools in ```pools_of_token.json``` are retrieves, both the pool sync and pool transfer events are retrieved and stored in the respective folders: ```data_path/pool_sync_events/``` and ```data_path/pool_transfer_events/[pool_address]```.
+
+This is done by calling the get_pool_events() function with the respective event name. In order to save time when doing data restarts a checkpoint system is implemented.
+
+### Get the decimals
+
+This part gets the amount of decimal precision used in a token. If it cant be retrieved 18 is sued. This saves the results in ```data_path/decimals.csv```.
+
+### Get Token transfers
+
+In this section we collect all the transfers that have occurred in a token in the defined period.  This saves the results in ```data_path/Token_tx/[token_name].csv```. This has functionality to start from where it left off with every token.
+
+### Extract pool heuristics
+Running the ```extract_pool_heuristics.py``` script get the relevant heuristics used for labeling the token in the ```assign_label.py```.
+
+### Extract pool transfer heuristics
+Running the ```extract_transfer_heuristics.py``` script get the relevant heuristics used for labeling the token in the ```assign_label.py```.
+
+### Adding label
+Running the ```assign_label.py``` script creates the the ```labeled_list.csv``` with the columns: ```["token_address", "pool_address", "label", "type"]```
+
+### Build dataset
+This will produce a file ```data_path/X.csv``` containing the input to be feed to the agent the labels for this are stored in a ```data_path/labeled_list.csv```
+
+# Running on a token
+
+When wanting to run the model for a single token one needs to run the ```main.py``` script with a trained model and the token address.
+
+# Common points of failure
+1. The EC2 instance crashing: this is usually because the step_size is too large.

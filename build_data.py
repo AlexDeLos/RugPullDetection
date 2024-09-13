@@ -24,7 +24,6 @@ shared.init()
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_path", type=str, default="./full_data", help="Path to data directory")
 parser.add_argument("--pools", type=bool, default=False, help="Do you want to get pools and tokens again?")
-parser.add_argument("--token" , type=str, default=None, help="Token to study")
 parser.add_argument("-e", "--events", type=bool, default=False, help="run event gathering")
 parser.add_argument("-t", "--token_tx", type=bool, default=False, help="run token tx gathering")
 # parser.add_argument("--to_block", type=int, default=shared.BLOCKSTUDY, help="Block to study")
@@ -34,7 +33,7 @@ out_path = args.data_path
 get_pools_and_tokens = args.pools
 run_events = args.events
 run_token_tx = args.token_tx
-token = args.token
+
 print(run_events)
 print(run_token_tx)
 print(f"arguments: {args}")
@@ -82,31 +81,10 @@ try:
     # get_token_and_pools(out_path, dex='sushiswap')
     logging.info("get_token_and_pools ran")
     print('created tokens and pools')
-
-    # token = '0x9359CbaF496816a632A31C6D03f038f31Be6D3cf' #! no pools found for this
-    # token = '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce' # -> shivainu token also gives error
-    # token = '0xdac17f958d2ee523a2206206994597c13d831ec7' # -> USDT, very active tokens take a LONG time
-    # token = '0x6B0FaCA7bA905a86F221CEb5CA404f605e5b3131' # -> DEFI token
-    # token = '0x8727c112C712c4a03371AC87a74dD6aB104Af768' # -> Jet coin token (healthy token)
-    #! token ='0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0' # -> Polygon MATIC token
-    # token = '0x6b175474e89094c44da98b954eedeac495271d0f' # -> DAI token  _> was 1 -> confirmed to be safe
-
-    # token = "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8" # -> AGEUR token should be safe?
     health_tokens = pd.read_csv('./healthy_tokens.csv')
 
     tokens = pd.read_csv(out_path + '/tokens.csv')['token_address'].values
 
-    # tokens to test 21/03./2024
-    # token = '0x42fd79daf2a847b59d487650c68c2d7e52d752f6' # -> xTrax high risk
-
-    #! token = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'
-
-    #! full scam 0x7ef1081ecc8b5b5b130656a41d4ce4f89dbbcc8c -> CP3RToken
-    # created on 11213887
-
-    #* Good tokens
-    # token = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' # -> USDC token
-    # token = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' # -> WETH token
     
     with open(out_path + '/pools_of_token.json', 'r') as f:
         pools_of_token= json.loads(f.read())
@@ -224,7 +202,7 @@ try:
     logging.info("Decimals created ------------------------------------------------")
     print('created decimals_dict') #REACHED HERE
 
-    #* run get_source_code.py
+    #* run get_source_code.py #! this is not needed
     # if not os.path.exists(out_path + "/source_code"):
     #     os.makedirs(out_path + "/source_code")
     # for token in tokens:
@@ -238,11 +216,9 @@ try:
 
     step_size = 2000
     count = 0
-    #* run get_transfers.py
 
-    # 0x6B175474E89094C44Da98b954EedeAC495271d0F
     
-    tokens_skip = ['0x7674d5Fa0f17a9A027f49f6c3B32046770E076eA','0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2']# done or long tokens
+    #* run get_transfers.py
     if run_token_tx:
         count_tokens = 0
         len_tokens = len(tokens)
@@ -313,16 +289,19 @@ try:
     # python ML/Labelling/extract_pool_heuristics.py --data_path ./temp_in_test --token 0x6b175474e89094c44da98b954eedeac495271d0f --to_block 13152303
     print("Running extract_pool_heuristics, on token: ", token)
     # logging.info(f"Running extract_pool_heuristics, on token: {token}")
-    subprocess.run(["python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
+    subprocess.run([".venv/bin/python", "ML/Labelling/extract_pool_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
     # extract_transfer_heuristics.py
     print("extract_pool_heuristics ran")
     # print("Running extract_transfer_heuristics, on token: ", token)
     # logging.info(f"Running extract_transfer_heuristics, on token: {token}")
-    subprocess.run(["python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
+    subprocess.run([".venv/bin/python", "ML/Labelling/extract_transfer_heuristics.py", "--data_path", out_path, "--to_block", str(eval_block_trans)])
     print("extract_transfer_heuristics ran")
-    # need to run assing label.py
-    # subprocess.run(["python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) #! this is not needed
-    # logging.info("build_dataset ran")
+    # need to run assign label.py
+    subprocess.run([".venv/bin/python", "ML/Labelling/assign_label.py", "--data_path", out_path])
+
+    subprocess.run([".venv/bin/python", "ML/build_dataset.py", "--data_path", out_path, "--token", token]) # this is not needed #? yes it is...
+    logging.info("build_dataset ran")
+
 except Exception as e:
     logging.error(f"Error: {e}")
     print(f"Error: {e}")
