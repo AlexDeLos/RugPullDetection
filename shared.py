@@ -86,7 +86,7 @@ def init():
     BLOCKSTUDY        = 13152303 + 160000*2
     BLOCKS_TO_BE_INACTIVE  =  BLOCKS_PER_DAY *30
 
-    DATA_PATH = "./data_mine"
+    DATA_PATH = "./full_data"
 
     web3 = Web3(Web3.HTTPProvider(INFURA_URLS[INFURA_URL_INDEX]))
     # multicall =  Multicall(web3.eth)
