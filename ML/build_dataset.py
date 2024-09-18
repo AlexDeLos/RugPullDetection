@@ -81,9 +81,10 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
             computed_features.update(get_transfer_features(transfers.loc[transfers.block_number < eval_block].values))
             computed_features.update(get_curve(transfers.loc[transfers.block_number < eval_block].values))
 
+            print(1)
             computed_features.update({'liq_curve': get_curve(
                 lp_transfers.loc[lp_transfers.block_number < eval_block].values)['tx_curve']})
-
+            print(2)
             transfer_types = lp_transfers.loc[lp_transfers.block_number < eval_block]['type'].value_counts()
             computed_features.update({'Mint': 0, 'Burn': 0, 'Transfer': 0})
             for type_ in transfer_types.index:
