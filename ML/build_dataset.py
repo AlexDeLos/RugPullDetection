@@ -35,6 +35,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
  
     try:
         features = pool_features.loc[address]
+        print("features")
         print(features)
         pool_address = features['pool_address']
         pool_info = WETH_pool_address[pool_address]
