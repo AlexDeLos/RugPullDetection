@@ -112,7 +112,7 @@ try:
                     continue
                 pool_address = shared.web3.to_checksum_address(pool['address'])
 
-                paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
+                paired_with_stable = True #= (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
 
                 if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json') and paired_with_stable:
 
