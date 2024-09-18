@@ -42,7 +42,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
 
         first_block, last_block = int(features['first_sync_block']), features['max_liq_block'] if _type == 1 else \
             features['max_price_block'] if _type == 2 else features['last_sync_block']
-        # print(features)
+        print(address)
         print(first_block, last_block)
 
         list_of_blocks = list((range(first_block, last_block, 1)))
