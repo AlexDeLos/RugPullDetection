@@ -70,7 +70,7 @@ def get_rpc_response(method, list_params=[]):
                         from_block_new = hex(step_size + ast.literal_eval(from_block_new))
                 elif log['error']['message'].split('.')[0] == 'project ID request rate exceeded':
                     warnings.warn('exceeded rate limit, waiting 30 seconds')
-                    print(log)
+                    print(log, url)
                     logging.warning('exceeded rate limit, waiting 30 seconds')
                     time.sleep(30)
                     return get_rpc_response(method, list_params)
