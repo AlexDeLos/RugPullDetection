@@ -78,7 +78,8 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
 
             # Transfer Features
             computed_features.update({'token_address': address, 'eval_block': eval_block})
-            print(1)
+            print(transfers)
+            print(transfers.loc[transfers.block_number < eval_block].values)
             computed_features.update(get_transfer_features(transfers.loc[transfers.block_number < eval_block].values))
             print(12)
             computed_features.update(get_curve(transfers.loc[transfers.block_number < eval_block].values))
