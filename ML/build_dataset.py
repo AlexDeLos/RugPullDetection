@@ -43,7 +43,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
         print(first_block, last_block)
 
         list_of_blocks = list((range(first_block, last_block, 1)))
-        print(list_of_blocks)
+        # print(list_of_blocks)
         eval_blocks = sorted(choice(list_of_blocks, 5)) if label == 1 else sorted(choice(list_of_blocks, 1))
         print(eval_blocks)
 
@@ -92,7 +92,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
                 {'difference_token_pool': lp_transfers['block_number'].iloc[0] - transfers['block_number'].iloc[0]}
             )
             computed_features.update(get_pool_features(syncs.loc[syncs.blockNumber < eval_block], WETH_position, decimal))
-
+            print(computed_features)
             final_dataset.append(computed_features)
         iteration += 1
         print(iteration, len(df))
