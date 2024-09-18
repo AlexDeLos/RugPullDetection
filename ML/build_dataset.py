@@ -21,6 +21,7 @@ token = args.token
 
 df = pd.read_csv(data_path+"/labeled_list.csv", index_col="token_address")
 pool_features = pd.read_csv(data_path+"/pool_heuristics.csv", index_col="token_address")
+print(pool_features)
 decimals = pd.read_csv(data_path+"/decimals.csv", index_col="token_address")
 with open(data_path+'/pools_of_token.json', 'r') as f:
     pool_of_token = json.loads(f.read())
