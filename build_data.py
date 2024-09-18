@@ -112,8 +112,12 @@ try:
                     continue
                 pool_address = shared.web3.to_checksum_address(pool['address'])
 
-                paired_with_stable = True #= (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
-
+                paired_with_stable = (any(s == pool['token0'] for s in health_tokens['token_address'].values) or any(s == pool['token1'] for s in health_tokens['token_address'].values))
+                if not paired_with_stable:
+                    print(f"Pool {pool_address} is not paired with a stable token")
+                    print("set paired_with_stable to True to continue")
+                    paired_with_stable = True
+                
                 if not os.path.exists(out_path + '/pool_transfer_events/'+ pool_address + '.json') and paired_with_stable:
 
                     new_from_block = from_block_trans
