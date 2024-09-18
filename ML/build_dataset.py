@@ -68,8 +68,9 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
         decimal = decimals.loc[address].iloc[0]
         if decimal == -999:
             decimal = 18
-
+        print(eval_blocks)
         for eval_block in eval_blocks:
+            print(eval_block)
             computed_features = {}
 
             # Transfer Features
