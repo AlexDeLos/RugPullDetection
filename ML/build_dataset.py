@@ -47,7 +47,6 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
         list_of_blocks = list((range(first_block, last_block, 1)))
         # print(list_of_blocks)
         eval_blocks = sorted(choice(list_of_blocks, 5)) if label == 1 else sorted(choice(list_of_blocks, 1))
-        print(eval_blocks)
 
         try:
             transfers = pd.read_csv(data_path+f"/Token_tx/{address}.csv")
