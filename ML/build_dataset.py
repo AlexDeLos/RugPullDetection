@@ -96,7 +96,8 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
             final_dataset.append(computed_features)
         iteration += 1
         print(iteration, len(df))
-    except:
-        pass
+    except Exception as err:
+        print(err)
+        continue
 
 pd.DataFrame(final_dataset).to_csv(data_path+"/X.csv", index=False)
