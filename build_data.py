@@ -221,7 +221,8 @@ try:
     step_size = 5000
     count = 0
 
-    
+    new_eval_block = eval_block_trans
+    new_from_block = from_block_trans
     #* run get_transfers.py
     if run_token_tx:
         count_tokens = 0
