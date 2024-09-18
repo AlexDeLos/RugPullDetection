@@ -72,7 +72,7 @@ def get_rpc_response(method, list_params=[]):
                     warnings.warn('exceeded rate limit, waiting 30 seconds')
                     print(log, url)
                     logging.warning('exceeded rate limit, waiting 30 seconds')
-                    time.sleep(30)
+                    time.sleep(35)
                     return get_rpc_response(method, list_params)
                 else:
                     Warning_string = f"change infura url {url} to another one {urls[(url_index + 1)% len(urls)]}, this one is not working anymore wait 24h?"
