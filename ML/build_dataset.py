@@ -73,7 +73,7 @@ for address, label, _type in zip(df.index.tolist(), df['label'], df['type']):
         if decimal == -999:
             decimal = 18
         for eval_block in eval_blocks:
-            print(eval_block)
+            print("---",eval_block)
             computed_features = {}
 
             # Transfer Features
