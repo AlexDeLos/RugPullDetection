@@ -218,7 +218,7 @@ try:
     if not os.path.exists(out_path + "/Token_tx"):
         os.makedirs(out_path + "/Token_tx")
 
-    step_size = 2500
+    step_size = 2000
     count = 0
 
     new_eval_block = eval_block_trans
